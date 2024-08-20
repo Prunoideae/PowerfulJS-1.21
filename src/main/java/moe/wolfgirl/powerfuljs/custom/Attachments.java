@@ -1,0 +1,29 @@
+package moe.wolfgirl.powerfuljs.custom;
+
+import moe.wolfgirl.powerfuljs.utils.MCID;
+import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.RegisterEvent;
+
+import java.util.List;
+
+public class Attachments {
+    public static final AttachmentType<Integer> FORGE_ENERGY = AttachmentType.builder(() -> 0)
+            .serialize(ExtraCodecs.NON_NEGATIVE_INT)
+            .build();
+
+    public static final AttachmentType<FluidStack> FLUID = AttachmentType.builder(() -> FluidStack.EMPTY)
+            .serialize(FluidStack.CODEC)
+            .build();
+
+    public static final AttachmentType<List<FluidStack>> FLUID_MULTITANK = AttachmentType.builder(() -> List.of(FluidStack.EMPTY))
+            .serialize(FluidStack.CODEC.listOf())
+            .build();
+
+    public static void init(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
+        helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
+        helper.register(MCID.create("fluid"), FLUID);
+        helper.register(MCID.create("fluid_multitank"), FLUID_MULTITANK);
+    }
+}

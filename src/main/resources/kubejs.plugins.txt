@@ -1,0 +1,2 @@
+moe.wolfgirl.powerfuljs.plugins.PowerfulJSPlugin
+moe.wolfgirl.powerfuljs.plugins.PowerfulJSProbePlugin client probejs

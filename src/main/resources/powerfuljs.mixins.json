@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "moe.wolfgirl.powerfuljs.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "refmap": "powerfuljs.refmap.json",
+    "mixins": [
+        "BlockCapabilityInvalidator"
+    ],
+    "client": [
+    ],
+    "injectors": {
+        "defaultRequire": 1
+  }
+}
