@@ -80,7 +80,7 @@ public abstract class BaseFluidTank implements IFluidHandler, IFluidTank {
         }
         int filled = Math.min(capacity - tankFluid.getAmount(), maxReceive);
         if (filled > 0) {
-            setFluidData(tankFluid.copyWithAmount(filled));
+            setFluidData(tankFluid.copyWithAmount(filled + tankFluid.getAmount()));
             onReceived(filled);
             onChanged();
         }

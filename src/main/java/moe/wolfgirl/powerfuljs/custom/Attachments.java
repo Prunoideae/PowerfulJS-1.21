@@ -2,6 +2,7 @@ package moe.wolfgirl.powerfuljs.custom;
 
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Unit;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -21,9 +22,14 @@ public class Attachments {
             .serialize(FluidStack.CODEC.listOf())
             .build();
 
+    public static final AttachmentType<Unit> DISABLED = AttachmentType.builder(() -> Unit.INSTANCE)
+            .serialize(Unit.CODEC)
+            .build();
+
     public static void init(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
         helper.register(MCID.create("fluid_multitank"), FLUID_MULTITANK);
+        helper.register(MCID.create("disabled"), DISABLED);
     }
 }

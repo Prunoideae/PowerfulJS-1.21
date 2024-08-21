@@ -59,7 +59,7 @@ public class ConstantFluid implements IFluidHandler {
     private final int maxReceive;
 
     public ConstantFluid(FluidStack content, int maxReceive) {
-        if (content.isEmpty()) throw new IllegalArgumentException("Content can't be whenEmptyBecomes.");
+        if (content.isEmpty()) throw new IllegalArgumentException("Content can't be empty.");
         this.content = content;
         this.capacity = content.getAmount() + maxReceive;
         this.maxReceive = maxReceive;

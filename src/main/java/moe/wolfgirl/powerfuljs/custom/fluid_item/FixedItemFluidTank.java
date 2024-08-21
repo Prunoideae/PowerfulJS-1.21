@@ -40,8 +40,8 @@ public class FixedItemFluidTank extends FixedFluidTank implements IFluidHandlerI
         ItemTransformRule.FullRule[] onFullTransform;
         if (configuration.containsKey("changeItemWhen")) {
             ItemTransformRule ruleSet = (ItemTransformRule) ItemTransformRule.TYPE_INFO.wrap(ctx, configuration.get("changeItemWhen"), ItemTransformRule.TYPE_INFO);
-            onEmptyTransform = ruleSet.whenEmptyBecomes;
-            onFullTransform = ruleSet.whenFullBecomes;
+            onEmptyTransform = ruleSet.empty;
+            onFullTransform = ruleSet.full;
         } else {
             onFullTransform = null;
             onEmptyTransform = null;
@@ -50,7 +50,7 @@ public class FixedItemFluidTank extends FixedFluidTank implements IFluidHandlerI
         return object -> new FixedItemFluidTank(maxExtract, maxReceive, capacity, validator, onEmptyTransform, onFullTransform, object);
     }
 
-    public record ItemTransformRule(ItemStack whenEmptyBecomes, FullRule[] whenFullBecomes) {
+    public record ItemTransformRule(ItemStack empty, FullRule[] full) {
         public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(ItemTransformRule.class);
 
         public record FullRule(FluidIngredient fluid, ItemStack item) {
