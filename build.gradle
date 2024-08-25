@@ -19,6 +19,24 @@ neoForge {
         from(file("interfaces.json"))
     }
 
+    runs {
+        configureEach {
+            logLevel = org.slf4j.event.Level.INFO
+        }
+
+        client {
+            client()
+            jvmArguments.addAll("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
+            gameDirectory = file 'run'
+        }
+
+        server {
+            server()
+            programArgument("--nogui")
+            gameDirectory = file 'run_server'
+        }
+    }
+
     mods {
         probejs {
             sourceSet sourceSets.main
@@ -47,6 +65,7 @@ repositories {
         url "https://maven.latvian.dev/releases"
         content {
             includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
         }
     }
 
@@ -88,7 +107,7 @@ dependencies {
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
     compileOnly("dev.architectury:architectury-neoforge:$architectury_version")
 
-    implementation("curse.maven:probejs-585406:5536459")
+    implementation("curse.maven:probejs-585406:5651850")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

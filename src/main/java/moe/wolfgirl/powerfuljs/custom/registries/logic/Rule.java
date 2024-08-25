@@ -7,13 +7,14 @@ import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.NotRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.OrRule;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class Rule {
     private final List<Effect> effects = new ArrayList<>();
@@ -46,7 +47,7 @@ public abstract class Rule {
         return and(rule);
     }
 
-    public Rule then(Effect... effects) {
+    public Rule thenRun(Effect... effects) {
         return then(new AlwaysRule(true).effects(effects));
     }
 
@@ -60,9 +61,9 @@ public abstract class Rule {
         return new OrRule(ImmutableList.copyOf(flattened));
     }
 
-    public abstract boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity);
+    public abstract boolean evaluate(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity);
 
-    public final boolean run(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public final boolean run(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         boolean condition = evaluate(level, pos, state, blockEntity);
         for (Effect effect : effects) {
             effect.apply(condition, level, pos, state, blockEntity);
@@ -70,12 +71,18 @@ public abstract class Rule {
         return condition;
     }
 
-    public record RuleSet(Rule[] rules) {
+    public record RuleSet(Supplier<List<Rule>> rules) {
         public <T extends BlockEntity> BlockEntityTicker<T> createTicker(BlockEntityTicker<T> original) {
+            // We create a set of rules each time we create a ticker, so we ensure that each ruleset is exclusive to each
+            // instance of BE.
+            var rules = this.rules.get();
             return (level, pos, state, be) -> {
-                for (Rule rule : rules) {
-                    rule.run(level, pos, state, be);
+                if (level instanceof ServerLevel serverLevel) {
+                    for (Rule rule : rules) {
+                        rule.run(serverLevel, pos, state, be);
+                    }
                 }
+
                 if (!be.hasData(Attachments.DISABLED)) original.tick(level, pos, state, be);
             };
         }

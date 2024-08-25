@@ -7,6 +7,8 @@ import moe.wolfgirl.powerfuljs.custom.fluid_item.FixedItemFluidTank;
 import moe.wolfgirl.powerfuljs.custom.forge_energy.ConstantEnergy;
 import moe.wolfgirl.powerfuljs.custom.forge_energy.Delegated;
 import moe.wolfgirl.powerfuljs.custom.forge_energy.storage.FixedEnergyStorage;
+import moe.wolfgirl.powerfuljs.custom.item.ConstantItem;
+import moe.wolfgirl.powerfuljs.custom.item.storage.FixedItemStorage;
 import moe.wolfgirl.powerfuljs.custom.registries.BlockCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.EntityCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.ItemCapabilityRegistry;
@@ -37,5 +39,15 @@ public class Registries {
         ItemCapabilityRegistry.register(FixedItemFluidTank.ITEM);
         EntityCapabilityRegistry.register(FixedFluidTank.ENTITY);
 
+        BlockCapabilityRegistry.register(ConstantItem.BLOCK);
+        BlockCapabilityRegistry.registerBE(ConstantItem.BLOCK_ENTITY);
+        ItemCapabilityRegistry.register(ConstantItem.ITEM);
+        EntityCapabilityRegistry.register(ConstantItem.ENTITY);
+        EntityCapabilityRegistry.register(ConstantItem.ENTITY_AUTOMATION);
+
+        BlockCapabilityRegistry.registerBE(FixedItemStorage.BLOCK_ENTITY);
+        ItemCapabilityRegistry.register(FixedItemStorage.ITEM);
+        EntityCapabilityRegistry.register(FixedItemStorage.ENTITY);
+        EntityCapabilityRegistry.register(FixedItemStorage.ENTITY_AUTOMATION);
     }
 }

@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom;
 
+import moe.wolfgirl.powerfuljs.custom.item.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;
@@ -15,7 +16,7 @@ public class Attachments {
             .build();
 
     public static final AttachmentType<FluidStack> FLUID = AttachmentType.builder(() -> FluidStack.EMPTY)
-            .serialize(FluidStack.CODEC)
+            .serialize(FluidStack.OPTIONAL_CODEC)
             .build();
 
     public static final AttachmentType<List<FluidStack>> FLUID_MULTITANK = AttachmentType.builder(() -> List.of(FluidStack.EMPTY))
@@ -26,10 +27,15 @@ public class Attachments {
             .serialize(Unit.CODEC)
             .build();
 
+    public static final AttachmentType<ItemContent> ITEM = AttachmentType.builder(ItemContent.EMPTY)
+            .serialize(ItemContent.CODEC)
+            .build();
+
     public static void init(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
         helper.register(MCID.create("fluid_multitank"), FLUID_MULTITANK);
+        helper.register(MCID.create("item"), ITEM);
         helper.register(MCID.create("disabled"), DISABLED);
     }
 }

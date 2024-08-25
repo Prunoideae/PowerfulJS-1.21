@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom;
 
+import moe.wolfgirl.powerfuljs.custom.item.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -18,8 +19,14 @@ public class DataComponents {
             .networkSynchronized(FluidStack.STREAM_CODEC)
             .build();
 
+    public static final DataComponentType<ItemContent> ITEM = DataComponentType.<ItemContent>builder()
+            .persistent(ItemContent.CODEC)
+            .networkSynchronized(ItemContent.STREAM_CODEC)
+            .build();
+
     public static void init(RegisterEvent.RegisterHelper<DataComponentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
+        helper.register(MCID.create("item"), ITEM);
     }
 }
