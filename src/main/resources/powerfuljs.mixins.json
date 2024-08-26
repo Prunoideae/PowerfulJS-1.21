@@ -6,6 +6,7 @@
     "refmap": "powerfuljs.refmap.json",
     "mixins": [
         "BlockCapabilityInvalidator",
+        "BlockTickerInterceptor",
         "BlockTickingInterceptor"
     ],
     "client": [

@@ -13,4 +13,5 @@ import java.util.Set;
 public class GameStates {
     public static Set<Block> REGISTERED_BLOCKS = new HashSet<>();
     public static Map<BlockEntityType<?>, Rule.RuleSet> INTERCEPTED_BLOCK_ENTITIES = new HashMap<>();
+    public static Map<BlockEntityType<?>, Boolean> FORCED_TICKED_BLOCK_ENTITIES = new HashMap<>();
 }

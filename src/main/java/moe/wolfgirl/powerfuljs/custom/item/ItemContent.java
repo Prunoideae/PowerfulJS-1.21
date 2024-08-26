@@ -37,7 +37,7 @@ public record ItemContent(List<ItemStack> items) {
     }
 
     public ItemContent withStackInSlot(int slot, ItemStack itemStack) {
-        NonNullList<ItemStack> newContent = NonNullList.withSize(Math.max(slot, items.size()), ItemStack.EMPTY);
+        NonNullList<ItemStack> newContent = NonNullList.withSize(Math.max(slot + 1, items.size()), ItemStack.EMPTY);
         for (int i = 0; i < items.size(); i++) {
             newContent.set(i, (i == slot ? itemStack : items.get(i)).copy());
         }
@@ -48,7 +48,7 @@ public record ItemContent(List<ItemStack> items) {
         var maxIndex = slots.stream().mapToInt(Slot::index).max();
         if (maxIndex.isEmpty()) return EMPTY.get();
 
-        ItemContent itemContent = new ItemContent(NonNullList.withSize(maxIndex.getAsInt(), ItemStack.EMPTY));
+        ItemContent itemContent = new ItemContent(NonNullList.withSize(maxIndex.getAsInt() + 1, ItemStack.EMPTY));
         for (Slot slot : slots) {
             itemContent.items.set(slot.index, slot.content);
         }

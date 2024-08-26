@@ -17,13 +17,6 @@ import net.neoforged.neoforge.capabilities.ItemCapability;
 public class PowerfulJSPlugin implements KubeJSPlugin {
 
     @Override
-    public void registerTypeWrappers(TypeWrapperRegistry registry) {
-        registry.register(BlockCapability.class, CapabilityJS.BLOCK::wrap);
-        registry.register(ItemCapability.class, CapabilityJS.ITEM::wrap);
-        registry.register(EntityCapability.class, CapabilityJS.ENTITY::wrap);
-    }
-
-    @Override
     public void registerEvents(EventGroupRegistry registry) {
         registry.register(PowerfulEvents.GROUP);
     }

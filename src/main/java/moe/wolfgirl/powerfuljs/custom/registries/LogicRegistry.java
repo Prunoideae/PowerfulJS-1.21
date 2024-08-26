@@ -8,6 +8,8 @@ import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.energy.DrainEnerg
 import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.energy.FillEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.fluid.DrainFluidEffect;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.fluid.FillFluidEffect;
+import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.item.ExtractItemEffect;
+import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.item.InsertItemEffect;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.MatchBlockRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.NBTRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.TickRateRule;
@@ -17,11 +19,17 @@ import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.HasEnergyRul
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.fluid.CanExtractFluid;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.fluid.CanReceiveFluid;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.fluid.HasFluidRule;
+import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.item.CanExtractItem;
+import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.item.CanInsertItem;
+import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.item.HasItemRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.AlwaysRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.OrRule;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
@@ -83,6 +91,21 @@ public class LogicRegistry {
         }
 
         /* Item handling */
+        public static Rule hasItem(Ingredient item, int count, @Nullable Direction direction) {
+            return new HasItemRule(item, count, direction);
+        }
+
+        public static Rule hasItem(SizedIngredient item, @Nullable Direction direction) {
+            return hasItem(item.ingredient(), item.count(), direction);
+        }
+
+        public static Rule canExtractItem(ItemStack itemStack, @Nullable Direction direction) {
+            return new CanExtractItem(itemStack, direction);
+        }
+
+        public static Rule canInsertItem(ItemStack itemStack, @Nullable Direction direction) {
+            return new CanInsertItem(itemStack, direction);
+        }
     }
 
     public static class Effects {
@@ -110,5 +133,12 @@ public class LogicRegistry {
         }
 
         /* Item handling */
+        public static Effect insertItem(ItemStack itemStack, @Nullable Direction context) {
+            return new InsertItemEffect(itemStack, context);
+        }
+
+        public static Effect extractItem(ItemStack itemStack, @Nullable Direction context) {
+            return new ExtractItemEffect(itemStack, context);
+        }
     }
 }

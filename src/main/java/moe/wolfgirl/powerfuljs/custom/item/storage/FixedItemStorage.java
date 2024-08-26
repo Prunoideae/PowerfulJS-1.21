@@ -142,5 +142,12 @@ public abstract class FixedItemStorage extends BaseItemStorage {
         public @NotNull ItemStack getStackInSlot(int slot) {
             return getItemData().getStackInSlot(slot);
         }
+
+        @Override
+        protected void onChanged() {
+            if (parent instanceof BlockEntity blockEntity) {
+                blockEntity.setChanged();
+            }
+        }
     }
 }

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BlockBehaviour.class)
-public class BlockCapabilityInvalidator {
+public abstract class BlockCapabilityInvalidator {
 
     @Inject(method = "onRemove", at = @At("RETURN"))
     public void autoInvalidate(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston, CallbackInfo ci) {
