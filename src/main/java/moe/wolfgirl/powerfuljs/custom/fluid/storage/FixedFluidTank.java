@@ -7,6 +7,7 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.ScriptRuntime;
 import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
 import dev.latvian.mods.rhino.type.JSOptionalParam;
+import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
@@ -18,37 +19,31 @@ import net.neoforged.neoforge.attachment.AttachmentHolder;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
 public abstract class FixedFluidTank extends BaseFluidTank {
     public static final ResourceLocation ID = MCID.create("fixed_storage_fluid");
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of(
-            new JSOptionalParam("capacity", TypeInfo.INT),
-            new JSOptionalParam("maxExtract", TypeInfo.INT, true),
-            new JSOptionalParam("maxReceive", TypeInfo.INT, true),
-            new JSOptionalParam("validator", FluidWrapper.INGREDIENT_TYPE_INFO, true)
-    );
 
+    public record Configuration(int capacity, int maxExtract, int maxReceive, FluidIngredient validator) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
+    
     public static final CapabilityBuilder<BlockEntity, IFluidHandler> BLOCK_ENTITY = CapabilityBuilder.create(
             ID, Capabilities.FluidHandler.BLOCK,
-            TYPE_INFO, FixedFluidTank::wraps
+            Configuration.TYPE_INFO, FixedFluidTank::wraps
     );
 
     public static final CapabilityBuilder<Entity, IFluidHandler> ENTITY = CapabilityBuilder.create(
             ID, Capabilities.FluidHandler.ENTITY,
-            TYPE_INFO, FixedFluidTank::wraps
+            Configuration.TYPE_INFO, FixedFluidTank::wraps
     );
 
-    public static <O extends AttachmentHolder> CapabilityBuilder.CapabilityFactory<O, IFluidHandler> wraps(Context ctx, Map<String, Object> configuration) {
-        var capacity = ScriptRuntime.toInt32(ctx, configuration.get("capacity"));
-        var maxExtract = ScriptRuntime.toInt32(ctx, configuration.get("maxExtract"));
-        var maxReceive = ScriptRuntime.toInt32(ctx, configuration.get("maxReceive"));
-        Predicate<FluidStack> validator = configuration.containsKey("validator") ?
-                FluidWrapper.wrapIngredient(RegistryAccessContainer.of(ctx), configuration.get("validator")) :
-                Predicates.alwaysTrue();
-        return object -> new Attachment(maxExtract, maxReceive, capacity, validator, object);
+    public static <O extends AttachmentHolder> CapabilityBuilder.CapabilityFactory<O, IFluidHandler> wraps(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new Attachment(c.maxExtract, c.maxReceive, c.capacity, c.validator, object);
     }
 
     private final int maxExtract;

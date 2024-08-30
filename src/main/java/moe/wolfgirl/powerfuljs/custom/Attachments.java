@@ -31,7 +31,7 @@ public class Attachments {
             .serialize(ItemContent.CODEC)
             .build();
 
-    public static void init(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
+    public static void initAttachments(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
         helper.register(MCID.create("fluid_multitank"), FLUID_MULTITANK);

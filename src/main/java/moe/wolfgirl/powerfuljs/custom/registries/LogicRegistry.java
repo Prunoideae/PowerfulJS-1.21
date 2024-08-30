@@ -10,9 +10,7 @@ import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.fluid.DrainFluidE
 import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.fluid.FillFluidEffect;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.item.ExtractItemEffect;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.item.InsertItemEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.MatchBlockRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.NBTRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.TickRateRule;
+import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.*;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.CanExtractEnergy;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.CanReceiveEnergy;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.HasEnergyRule;
@@ -27,8 +25,10 @@ import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.OrRule;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -62,6 +62,18 @@ public class LogicRegistry {
 
         public static Rule every(int ticks) {
             return new TickRateRule(ticks);
+        }
+
+        public static Rule higherThan(int y) {
+            return new YPosRule(y);
+        }
+
+        public static Rule brighterThan(int brightness) {
+            return new LightRule(brightness);
+        }
+
+        public static Rule inBiome(TagKey<Biome> biomeTag) {
+            return new InBiomeRule(biomeTag);
         }
 
         /* Fluid handling */

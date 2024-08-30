@@ -24,7 +24,7 @@ public class DataComponents {
             .networkSynchronized(ItemContent.STREAM_CODEC)
             .build();
 
-    public static void init(RegisterEvent.RegisterHelper<DataComponentType<?>> helper) {
+    public static void initComponents(RegisterEvent.RegisterHelper<DataComponentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
         helper.register(MCID.create("item"), ITEM);

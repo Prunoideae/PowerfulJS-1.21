@@ -6,6 +6,7 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.ScriptRuntime;
 import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
 import dev.latvian.mods.rhino.type.JSOptionalParam;
+import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
@@ -29,48 +30,39 @@ import java.util.Map;
 public abstract class FixedItemStorage extends BaseItemStorage {
     public static final ResourceLocation ID = MCID.create("fixed_storage_item");
     public static final ResourceLocation ID_AUTOMATION = MCID.create("fixed_storage_item_automation");
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of(
-            new JSOptionalParam("size", TypeInfo.INT),
-            new JSOptionalParam("maxStack", TypeInfo.INT, true),
-            new JSOptionalParam("validator", IngredientJS.TYPE_INFO, true)
-    );
+
+    public record Configuration(int size, int maxStack, Ingredient validator) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
 
     public static final CapabilityBuilder<BlockEntity, IItemHandler> BLOCK_ENTITY = CapabilityBuilder.create(
             ID, Capabilities.ItemHandler.BLOCK,
-            TYPE_INFO, FixedItemStorage::wrapsAttachment
+            Configuration.TYPE_INFO, FixedItemStorage::wrapsAttachment
     );
 
     public static final CapabilityBuilder<Entity, IItemHandler> ENTITY = CapabilityBuilder.create(
             ID, Capabilities.ItemHandler.ENTITY,
-            TYPE_INFO, FixedItemStorage::wrapsAttachment
+            Configuration.TYPE_INFO, FixedItemStorage::wrapsAttachment
     );
 
     public static final CapabilityBuilder<Entity, IItemHandler> ENTITY_AUTOMATION = CapabilityBuilder.create(
             ID_AUTOMATION, Capabilities.ItemHandler.ENTITY,
-            TYPE_INFO, FixedItemStorage::wrapsAttachment
+            Configuration.TYPE_INFO, FixedItemStorage::wrapsAttachment
     );
 
     public static final CapabilityBuilder<ItemStack, IItemHandler> ITEM = CapabilityBuilder.create(
             ID, Capabilities.ItemHandler.ITEM,
-            TYPE_INFO, FixedItemStorage::wrapsComponent
+            Configuration.TYPE_INFO, FixedItemStorage::wrapsComponent
     );
 
-    public static <O extends AttachmentHolder> CapabilityBuilder.CapabilityFactory<O, IItemHandler> wrapsAttachment(Context ctx, Map<String, Object> configuration) {
-        var size = ScriptRuntime.toInt32(ctx, configuration.get("size"));
-        var maxStack = configuration.containsKey("maxStack") ? ScriptRuntime.toInt32(ctx, configuration.get("maxStack")) : Item.ABSOLUTE_MAX_STACK_SIZE;
-        Ingredient validator = configuration.containsKey("validator") ?
-                IngredientJS.wrap(RegistryAccessContainer.of(ctx), configuration.get("validator")) :
-                null;
-        return object -> new Attachment(size, maxStack, validator, object);
+    public static <O extends AttachmentHolder> CapabilityBuilder.CapabilityFactory<O, IItemHandler> wrapsAttachment(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new Attachment(c.size, c.maxStack, c.validator, object);
     }
 
-    public static <O extends MutableDataComponentHolder> CapabilityBuilder.CapabilityFactory<O, IItemHandler> wrapsComponent(Context ctx, Map<String, Object> configuration) {
-        var size = ScriptRuntime.toInt32(ctx, configuration.get("size"));
-        var maxStack = configuration.containsKey("maxStack") ? ScriptRuntime.toInt32(ctx, configuration.get("maxStack")) : Item.ABSOLUTE_MAX_STACK_SIZE;
-        Ingredient validator = configuration.containsKey("validator") ?
-                IngredientJS.wrap(RegistryAccessContainer.of(ctx), configuration.get("validator")) :
-                null;
-        return object -> new Component(size, maxStack, validator, object);
+    public static <O extends MutableDataComponentHolder> CapabilityBuilder.CapabilityFactory<O, IItemHandler> wrapsComponent(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new Component(c.size, c.maxStack, c.validator, object);
     }
 
     private final int size;

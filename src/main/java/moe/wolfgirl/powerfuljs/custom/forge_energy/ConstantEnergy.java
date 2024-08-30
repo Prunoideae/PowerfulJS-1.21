@@ -4,6 +4,7 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.ScriptRuntime;
 import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
 import dev.latvian.mods.rhino.type.JSOptionalParam;
+import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
 import moe.wolfgirl.powerfuljs.custom.base.info.BlockContext;
@@ -23,35 +24,35 @@ import java.util.Map;
  */
 public class ConstantEnergy implements IEnergyStorage {
     public static final ResourceLocation ID = MCID.create("constant_energy");
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of(
-            new JSOptionalParam("maxExtract", TypeInfo.INT, true),
-            new JSOptionalParam("maxReceive", TypeInfo.INT, true)
-    );
 
-    public static <O> CapabilityBuilder.CapabilityFactory<O, IEnergyStorage> wraps(Context ctx, Map<String, Object> configuration) {
-        var maxExtract = ScriptRuntime.toInt32(ctx, configuration.get("maxExtract"));
-        var maxReceive = ScriptRuntime.toInt32(ctx, configuration.get("maxReceive"));
-        return object -> new ConstantEnergy(maxExtract, maxReceive);
+    public record Configuration(int maxExtract, int maxReceive) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
+
+
+    public static <O> CapabilityBuilder.CapabilityFactory<O, IEnergyStorage> wraps(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new ConstantEnergy(c.maxExtract, c.maxReceive);
     }
 
     public static final CapabilityBuilder<BlockContext, IEnergyStorage> BLOCK = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.BLOCK,
-            TYPE_INFO, ConstantEnergy::wraps
+            Configuration.TYPE_INFO, ConstantEnergy::wraps
     );
 
     public static final CapabilityBuilder<BlockEntity, IEnergyStorage> BLOCK_ENTITY = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.BLOCK,
-            TYPE_INFO, ConstantEnergy::wraps
+            Configuration.TYPE_INFO, ConstantEnergy::wraps
     );
 
     public static final CapabilityBuilder<Entity, IEnergyStorage> ENTITY = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.ENTITY,
-            TYPE_INFO, ConstantEnergy::wraps
+            Configuration.TYPE_INFO, ConstantEnergy::wraps
     );
 
     public static final CapabilityBuilder<ItemStack, IEnergyStorage> ITEM = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.ITEM,
-            TYPE_INFO, ConstantEnergy::wraps
+            Configuration.TYPE_INFO, ConstantEnergy::wraps
     );
 
     private final int maxExtract;

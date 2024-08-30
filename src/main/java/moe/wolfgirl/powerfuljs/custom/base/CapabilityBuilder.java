@@ -17,7 +17,7 @@ public record CapabilityBuilder<O, T>(ResourceLocation name, BaseCapability<T, ?
     /**
      * Generates a configuration from input object.
      */
-    public CapabilityFactory<O, T> wraps(Context ctx, Map<String, Object> configuration) {
+    public CapabilityFactory<O, T> wraps(Context ctx, Object configuration) {
         return factory.create(ctx, configuration);
     }
 
@@ -26,7 +26,7 @@ public record CapabilityBuilder<O, T>(ResourceLocation name, BaseCapability<T, ?
     }
 
     public interface FactoryProvider<O, T> {
-        CapabilityFactory<O, T> create(Context ctx, Map<String, Object> configuration);
+        CapabilityFactory<O, T> create(Context ctx, Object configuration);
     }
 
     public static <O, T> CapabilityBuilder<O, T> create(ResourceLocation name, BaseCapability<T, ?> capability,

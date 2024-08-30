@@ -1,10 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom.fluid_item;
 
-import com.google.common.base.Predicates;
-import dev.latvian.mods.kubejs.fluid.FluidWrapper;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
-import dev.latvian.mods.rhino.ScriptRuntime;
 import dev.latvian.mods.rhino.type.*;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
@@ -16,38 +12,34 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.function.Predicate;
 
 public class FixedItemFluidTank extends FixedFluidTank implements IFluidHandlerItem {
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of(
-            new JSOptionalParam("capacity", TypeInfo.INT),
-            new JSOptionalParam("maxExtract", TypeInfo.INT, true),
-            new JSOptionalParam("maxReceive", TypeInfo.INT, true),
-            new JSOptionalParam("validator", FluidWrapper.INGREDIENT_TYPE_INFO, true),
-            new JSOptionalParam("changeItemWhen", ItemTransformRule.TYPE_INFO, true)
+
+    public record Configuration(int capacity, int maxExtract, int maxReceive, FluidIngredient validator,
+                                ItemTransformRule changeItemWhen) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
+
+    public static final CapabilityBuilder<ItemStack, IFluidHandlerItem> ITEM = CapabilityBuilder.create(
+            ID, Capabilities.FluidHandler.ITEM,
+            Configuration.TYPE_INFO, FixedItemFluidTank::wrapsItem
     );
 
-    public static CapabilityBuilder.CapabilityFactory<ItemStack, IFluidHandlerItem> wrapsItem(Context ctx, Map<String, Object> configuration) {
-        var capacity = ScriptRuntime.toInt32(ctx, configuration.get("capacity"));
-        var maxExtract = ScriptRuntime.toInt32(ctx, configuration.get("maxExtract"));
-        var maxReceive = ScriptRuntime.toInt32(ctx, configuration.get("maxReceive"));
-        Predicate<FluidStack> validator = configuration.containsKey("validator") ?
-                FluidWrapper.wrapIngredient(RegistryAccessContainer.of(ctx), configuration.get("validator")) :
-                Predicates.alwaysTrue();
+    public static CapabilityBuilder.CapabilityFactory<ItemStack, IFluidHandlerItem> wrapsItem(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
 
         ItemStack onEmptyTransform;
         ItemTransformRule.FullRule[] onFullTransform;
-        if (configuration.containsKey("changeItemWhen")) {
-            ItemTransformRule ruleSet = (ItemTransformRule) ItemTransformRule.TYPE_INFO.wrap(ctx, configuration.get("changeItemWhen"), ItemTransformRule.TYPE_INFO);
-            onEmptyTransform = ruleSet.empty;
-            onFullTransform = ruleSet.full;
+        if (c.changeItemWhen != null) {
+            onEmptyTransform = c.changeItemWhen.empty;
+            onFullTransform = c.changeItemWhen.full;
         } else {
             onFullTransform = null;
             onEmptyTransform = null;
         }
 
-        return object -> new FixedItemFluidTank(maxExtract, maxReceive, capacity, validator, onEmptyTransform, onFullTransform, object);
+        return object -> new FixedItemFluidTank(c.maxExtract, c.maxReceive, c.capacity, c.validator, onEmptyTransform, onFullTransform, object);
     }
 
     public record ItemTransformRule(ItemStack empty, FullRule[] full) {
@@ -56,11 +48,6 @@ public class FixedItemFluidTank extends FixedFluidTank implements IFluidHandlerI
         public record FullRule(FluidIngredient fluid, ItemStack item) {
         }
     }
-
-    public static final CapabilityBuilder<ItemStack, IFluidHandlerItem> ITEM = CapabilityBuilder.create(
-            ID, Capabilities.FluidHandler.ITEM,
-            TYPE_INFO, FixedItemFluidTank::wrapsItem
-    );
 
     private ItemStack parent;
     private final ItemStack onEmptyTransform;

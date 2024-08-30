@@ -31,7 +31,7 @@ public class PowerfulRegisterCapabilitiesEvent implements KubeEvent {
     private final List<Pair<EntityType<?>, EntityInfo>> registeredEntities = new ArrayList<>();
 
 
-    public BlockInfo registerBlock(Context ctx, ResourceLocation builderKey, Map<String, Object> configuration, Block... blocks) {
+    public BlockInfo registerBlock(Context ctx, ResourceLocation builderKey, Object configuration, Block... blocks) {
         var builder = BlockCapabilityRegistry.BLOCKS.get(builderKey);
         if (builder == null) throw new IllegalArgumentException("Unknown capability builder %s!".formatted(builderKey));
 
@@ -42,7 +42,7 @@ public class PowerfulRegisterCapabilitiesEvent implements KubeEvent {
         return info;
     }
 
-    public BlockEntityInfo registerBlockEntity(Context ctx, ResourceLocation builderKey, Map<String, Object> configuration, BlockEntityType<?> blockEntityType) {
+    public BlockEntityInfo registerBlockEntity(Context ctx, ResourceLocation builderKey, Object configuration, BlockEntityType<?> blockEntityType) {
         var builder = BlockCapabilityRegistry.BLOCK_ENTITIES.get(builderKey);
         if (builder == null) throw new IllegalArgumentException("Unknown capability builder %s!".formatted(builderKey));
 
@@ -59,7 +59,7 @@ public class PowerfulRegisterCapabilitiesEvent implements KubeEvent {
         return info;
     }
 
-    public ItemStackInfo registerItem(Context ctx, ResourceLocation builderKey, Map<String, Object> configuration, Item... items) {
+    public ItemStackInfo registerItem(Context ctx, ResourceLocation builderKey, Object configuration, Item... items) {
         var builder = ItemCapabilityRegistry.ITEM.get(builderKey);
         if (builder == null) throw new IllegalArgumentException("Unknown capability builder %s!".formatted(builderKey));
 
@@ -72,7 +72,7 @@ public class PowerfulRegisterCapabilitiesEvent implements KubeEvent {
         return info;
     }
 
-    public EntityInfo registerEntity(Context ctx, ResourceLocation builderKey, Map<String, Object> configuration, EntityType<?>... entityTypes) {
+    public EntityInfo registerEntity(Context ctx, ResourceLocation builderKey, Object configuration, EntityType<?>... entityTypes) {
         var builder = EntityCapabilityRegistry.ENTITY.get(builderKey);
         if (builder == null) throw new IllegalArgumentException("Unknown capability builder %s!".formatted(builderKey));
 

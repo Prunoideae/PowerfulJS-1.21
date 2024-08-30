@@ -9,9 +9,11 @@ import moe.wolfgirl.powerfuljs.custom.forge_energy.storage.FixedEnergyStorage;
 import moe.wolfgirl.powerfuljs.custom.item.ConstantItem;
 import moe.wolfgirl.powerfuljs.custom.item.storage.Delegated;
 import moe.wolfgirl.powerfuljs.custom.item.storage.FixedItemStorage;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.MekRegistries;
 import moe.wolfgirl.powerfuljs.custom.registries.BlockCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.EntityCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.ItemCapabilityRegistry;
+import moe.wolfgirl.powerfuljs.utils.ModUtils;
 
 public class Registries {
 
@@ -46,5 +48,7 @@ public class Registries {
         EntityCapabilityRegistry.register(FixedItemStorage.ENTITY_AUTOMATION);
 
         BlockCapabilityRegistry.registerBE(Delegated.BLOCK_ENTITY);
+
+        ModUtils.whenLoaded("mekanism", MekRegistries::init);
     }
 }

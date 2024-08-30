@@ -10,6 +10,9 @@ import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.registries.LogicRegistry;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
 import moe.wolfgirl.powerfuljs.events.PowerfulInterceptTickingEvent;
+import moe.wolfgirl.powerfuljs.plugins.mods.Mekanism;
+import moe.wolfgirl.powerfuljs.utils.ModUtils;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -25,6 +28,7 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
     public void registerBindings(BindingRegistry bindings) {
         bindings.add("Rules", LogicRegistry.Rules.class);
         bindings.add("Effects", LogicRegistry.Effects.class);
+        ModUtils.whenLoaded("mekanism", () -> Mekanism.registerBindings(bindings));
     }
 
     @Override

@@ -4,7 +4,6 @@ import dev.latvian.mods.kubejs.block.entity.BlockEntityAttachment;
 import dev.latvian.mods.kubejs.block.entity.InventoryAttachment;
 import dev.latvian.mods.kubejs.block.entity.KubeBlockEntity;
 import dev.latvian.mods.rhino.Context;
-import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
 import moe.wolfgirl.powerfuljs.utils.MCID;
@@ -16,21 +15,18 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-
 /**
  * Delegates the item handling to the KubeBlockEntity's InventoryAttachment
  */
 public class Delegated implements IItemHandler {
     public static final ResourceLocation ID = MCID.create("item_storage_delegated");
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of();
 
     public static final CapabilityBuilder<BlockEntity, IItemHandler> BLOCK_ENTITY = CapabilityBuilder.create(
             ID, Capabilities.ItemHandler.BLOCK,
-            TYPE_INFO, Delegated::wraps
+            TypeInfo.OBJECT, Delegated::wraps
     );
 
-    public static <O extends BlockEntity> CapabilityBuilder.CapabilityFactory<O, IItemHandler> wraps(Context ctx, Map<String, Object> configuration) {
+    public static <O extends BlockEntity> CapabilityBuilder.CapabilityFactory<O, IItemHandler> wraps(Context ctx, Object configuration) {
         return object -> {
             InventoryAttachment inventoryAttachment = null;
             if (object instanceof KubeBlockEntity kubeBlockEntity) {

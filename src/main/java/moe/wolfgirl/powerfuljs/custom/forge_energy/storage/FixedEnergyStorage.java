@@ -4,10 +4,12 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.ScriptRuntime;
 import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
 import dev.latvian.mods.rhino.type.JSOptionalParam;
+import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
+import moe.wolfgirl.powerfuljs.custom.fluid.storage.FixedFluidTank;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +19,7 @@ import net.neoforged.neoforge.attachment.AttachmentHolder;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.MutableDataComponentHolder;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import java.util.Map;
 
@@ -25,39 +28,35 @@ import java.util.Map;
  */
 public abstract class FixedEnergyStorage extends BaseEnergyStorage {
     public static final ResourceLocation ID = MCID.create("fixed_storage_fe");
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of(
-            new JSOptionalParam("capacity", TypeInfo.INT),
-            new JSOptionalParam("maxExtract", TypeInfo.INT, true),
-            new JSOptionalParam("maxReceive", TypeInfo.INT, true)
-    );
+
+    public record Configuration(int capacity, int maxExtract, int maxReceive) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
+
 
     public static final CapabilityBuilder<BlockEntity, IEnergyStorage> BLOCK_ENTITY = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.BLOCK,
-            TYPE_INFO, FixedEnergyStorage::wrapsAttachment
+            Configuration.TYPE_INFO, FixedEnergyStorage::wrapsAttachment
     );
 
     public static final CapabilityBuilder<Entity, IEnergyStorage> ENTITY = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.ENTITY,
-            TYPE_INFO, FixedEnergyStorage::wrapsAttachment
+            Configuration.TYPE_INFO, FixedEnergyStorage::wrapsAttachment
     );
 
     public static final CapabilityBuilder<ItemStack, IEnergyStorage> ITEM = CapabilityBuilder.create(
             ID, Capabilities.EnergyStorage.ITEM,
-            TYPE_INFO, FixedEnergyStorage::wrapsComponent
+            Configuration.TYPE_INFO, FixedEnergyStorage::wrapsComponent
     );
 
-    public static <O extends AttachmentHolder> CapabilityBuilder.CapabilityFactory<O, IEnergyStorage> wrapsAttachment(Context ctx, Map<String, Object> configuration) {
-        var capacity = ScriptRuntime.toInt32(ctx, configuration.get("capacity"));
-        var maxExtract = ScriptRuntime.toInt32(ctx, configuration.get("maxExtract"));
-        var maxReceive = ScriptRuntime.toInt32(ctx, configuration.get("maxReceive"));
-        return object -> new Attachment(capacity, maxReceive, maxExtract, object);
+    public static <O extends AttachmentHolder> CapabilityBuilder.CapabilityFactory<O, IEnergyStorage> wrapsAttachment(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new Attachment(c.capacity, c.maxReceive, c.maxExtract, object);
     }
 
-    public static <O extends MutableDataComponentHolder> CapabilityBuilder.CapabilityFactory<O, IEnergyStorage> wrapsComponent(Context ctx, Map<String, Object> configuration) {
-        var capacity = ScriptRuntime.toInt32(ctx, configuration.get("capacity"));
-        var maxExtract = ScriptRuntime.toInt32(ctx, configuration.get("maxExtract"));
-        var maxReceive = ScriptRuntime.toInt32(ctx, configuration.get("maxReceive"));
-        return object -> new Component(capacity, maxReceive, maxExtract, object);
+    public static <O extends MutableDataComponentHolder> CapabilityBuilder.CapabilityFactory<O, IEnergyStorage> wrapsComponent(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new Component(c.capacity, c.maxReceive, c.maxExtract, object);
     }
 
     private final int capacity;

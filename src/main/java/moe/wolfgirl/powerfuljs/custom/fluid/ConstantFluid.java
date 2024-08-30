@@ -6,6 +6,7 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.ScriptRuntime;
 import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
 import dev.latvian.mods.rhino.type.JSOptionalParam;
+import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
 import moe.wolfgirl.powerfuljs.custom.base.info.BlockContext;
@@ -27,30 +28,29 @@ import java.util.Map;
  */
 public class ConstantFluid implements IFluidHandler {
     public static final ResourceLocation ID = MCID.create("constant_fluid");
-    public static final TypeInfo TYPE_INFO = JSObjectTypeInfo.of(
-            new JSOptionalParam("content", FluidWrapper.TYPE_INFO),
-            new JSOptionalParam("maxReceive", TypeInfo.INT, true)
-    );
 
-    public static <O> CapabilityBuilder.CapabilityFactory<O, IFluidHandler> wraps(Context ctx, Map<String, Object> configuration) {
-        var content = FluidWrapper.wrap(RegistryAccessContainer.of(ctx), configuration.get("content"));
-        var maxReceive = ScriptRuntime.toInt32(ctx, configuration.get("maxReceive"));
-        return object -> new ConstantFluid(content, maxReceive);
+    public record Configuration(FluidStack content, int maxReceive) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
+
+    public static <O> CapabilityBuilder.CapabilityFactory<O, IFluidHandler> wraps(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new ConstantFluid(c.content, c.maxReceive);
     }
 
     public static final CapabilityBuilder<BlockContext, IFluidHandler> BLOCK = CapabilityBuilder.create(
             ID, Capabilities.FluidHandler.BLOCK,
-            TYPE_INFO, ConstantFluid::wraps
+            Configuration.TYPE_INFO, ConstantFluid::wraps
     );
 
     public static final CapabilityBuilder<BlockEntity, IFluidHandler> BLOCK_ENTITY = CapabilityBuilder.create(
             ID, Capabilities.FluidHandler.BLOCK,
-            TYPE_INFO, ConstantFluid::wraps
+            Configuration.TYPE_INFO, ConstantFluid::wraps
     );
 
     public static final CapabilityBuilder<Entity, IFluidHandler> ENTITY = CapabilityBuilder.create(
             ID, Capabilities.FluidHandler.ENTITY,
-            TYPE_INFO, ConstantFluid::wraps
+            Configuration.TYPE_INFO, ConstantFluid::wraps
     );
 
 

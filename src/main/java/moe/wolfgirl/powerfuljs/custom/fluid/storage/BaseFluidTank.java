@@ -46,7 +46,7 @@ public abstract class BaseFluidTank implements IFluidHandler, IFluidTank {
 
     @Override
     public boolean isFluidValid(@NotNull FluidStack stack) {
-        return validator.test(stack);
+        return validator == null || validator.test(stack);
     }
 
     @Override
