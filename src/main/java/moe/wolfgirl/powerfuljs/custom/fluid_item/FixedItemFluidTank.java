@@ -43,8 +43,6 @@ public class FixedItemFluidTank extends FixedFluidTank implements IFluidHandlerI
     }
 
     public record ItemTransformRule(ItemStack empty, FullRule[] full) {
-        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(ItemTransformRule.class);
-
         public record FullRule(FluidIngredient fluid, ItemStack item) {
         }
     }

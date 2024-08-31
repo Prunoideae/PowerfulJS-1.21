@@ -1,6 +1,7 @@
 package moe.wolfgirl.powerfuljs.plugins;
 
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
+import moe.wolfgirl.powerfuljs.custom.base.info.BlockContext;
 import moe.wolfgirl.powerfuljs.custom.registries.BlockCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.EntityCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.ItemCapabilityRegistry;
@@ -9,27 +10,19 @@ import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
-import moe.wolfgirl.probejs.lang.typescript.code.Code;
 import moe.wolfgirl.probejs.lang.typescript.code.member.ClassDecl;
 import moe.wolfgirl.probejs.lang.typescript.code.member.MethodDecl;
 import moe.wolfgirl.probejs.lang.typescript.code.member.ParamDecl;
 import moe.wolfgirl.probejs.lang.typescript.code.member.TypeDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.ts.Statements;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
 
 public class PowerfulJSProbePlugin extends ProbeJSPlugin {
-    private static final Set<String> REMOVED = Set.of(
-            "registerBlock",
-            "registerBlockEntity",
-            "registerItem",
-            "registerEntity"
-    );
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
@@ -78,33 +71,21 @@ public class PowerfulJSProbePlugin extends ProbeJSPlugin {
         methodDecl.params.set(1, new ParamDecl("configuration", Types.primitive("%s[T]".formatted(mapName)), false, false));
     }
 
-    private <O> @NotNull List<MethodDecl> patch(MethodDecl method, TypeConverter converter, Map<ResourceLocation, CapabilityBuilder<O, ?>> registry) {
-        List<MethodDecl> methods = new ArrayList<>();
-        for (Map.Entry<ResourceLocation, CapabilityBuilder<O, ?>> entry : registry.entrySet()) {
-            ResourceLocation key = entry.getKey();
-            CapabilityBuilder<O, ?> builder = entry.getValue();
 
-            MethodDecl generated = new MethodDecl(
-                    method.name,
-                    method.variableTypes,
-                    new ArrayList<>(method.params),
-                    method.returnType
-            );
-            generated.params.set(0, new ParamDecl(
-                    "builderKey",
-                    Types.literal(key.toString()),
-                    false,
-                    false)
-            );
-            generated.params.set(1, new ParamDecl(
-                    "configuration",
-                    converter.convertType(builder.typeInfo()),
-                    false,
-                    false)
-            );
-
-            methods.add(generated);
+    private <O> void addBuilderClasses(Map<ResourceLocation, CapabilityBuilder<O, ?>> builders, Set<Class<?>> allClass) {
+        for (CapabilityBuilder<O, ?> value : builders.values()) {
+            allClass.add(value.typeInfo().asClass());
         }
-        return methods;
+    }
+
+    @Override
+    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
+        Set<Class<?>> classes = new HashSet<>();
+        addBuilderClasses(BlockCapabilityRegistry.BLOCK_ENTITIES, classes);
+        addBuilderClasses(BlockCapabilityRegistry.BLOCKS, classes);
+        addBuilderClasses(ItemCapabilityRegistry.ITEM, classes);
+        addBuilderClasses(EntityCapabilityRegistry.ENTITY, classes);
+
+        return classes;
     }
 }

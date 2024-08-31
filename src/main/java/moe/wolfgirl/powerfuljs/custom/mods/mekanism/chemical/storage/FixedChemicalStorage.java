@@ -8,7 +8,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
-import moe.wolfgirl.powerfuljs.custom.base.info.BlockContext;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.MekAttachments;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.MekDataComponents;
 import moe.wolfgirl.powerfuljs.utils.MCID;

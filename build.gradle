@@ -38,7 +38,7 @@ neoForge {
     }
 
     mods {
-        probejs {
+        powerfuljs {
             sourceSet sourceSets.main
         }
     }
@@ -154,6 +154,7 @@ tasks.withType(ProcessResources).configureEach {
 compileJava {
     options.encoding = "UTF-8"
     options.release.set(21)
+    options.compilerArgs << '-parameters'
 }
 
 java {

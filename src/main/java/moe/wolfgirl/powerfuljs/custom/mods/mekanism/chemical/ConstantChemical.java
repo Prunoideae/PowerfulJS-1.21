@@ -1,14 +1,55 @@
 package moe.wolfgirl.powerfuljs.custom.mods.mekanism.chemical;
 
+import dev.latvian.mods.rhino.Context;
+import dev.latvian.mods.rhino.type.RecordTypeInfo;
+import dev.latvian.mods.rhino.type.TypeInfo;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.common.capabilities.Capabilities;
+import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
+import moe.wolfgirl.powerfuljs.custom.base.info.BlockContext;
+import moe.wolfgirl.powerfuljs.utils.MCID;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * A chemical handler that holds a constant amount of chemical.
  */
 public class ConstantChemical implements IChemicalHandler {
+    public static final ResourceLocation ID = MCID.create("constant_chemical");
+
+    public record Configuration(ChemicalStack stack) {
+        public static final RecordTypeInfo TYPE_INFO = (RecordTypeInfo) TypeInfo.of(Configuration.class);
+    }
+
+    public static final CapabilityBuilder<ItemStack, IChemicalHandler> ITEM = CapabilityBuilder.create(
+            ID, Capabilities.CHEMICAL.item(),
+            Configuration.TYPE_INFO, ConstantChemical::wraps
+    );
+
+    public static final CapabilityBuilder<BlockEntity, IChemicalHandler> BLOCK_ENTITY = CapabilityBuilder.create(
+            ID, Capabilities.CHEMICAL.block(),
+            Configuration.TYPE_INFO, ConstantChemical::wraps
+    );
+
+    public static final CapabilityBuilder<BlockContext, IChemicalHandler> BLOCK = CapabilityBuilder.create(
+            ID, Capabilities.CHEMICAL.block(),
+            Configuration.TYPE_INFO, ConstantChemical::wraps
+    );
+
+    public static final CapabilityBuilder<Entity, IChemicalHandler> ENTITY = CapabilityBuilder.create(
+            ID, Capabilities.CHEMICAL.entity(),
+            Configuration.TYPE_INFO, ConstantChemical::wraps
+    );
+
+    public static <O> CapabilityBuilder.CapabilityFactory<O, IChemicalHandler> wraps(Context ctx, Object configuration) {
+        Configuration c = (Configuration) Configuration.TYPE_INFO.wrap(ctx, configuration, Configuration.TYPE_INFO);
+        return object -> new ConstantChemical(c.stack);
+    }
 
     private final ChemicalStack chemical;
 
@@ -27,7 +68,7 @@ public class ConstantChemical implements IChemicalHandler {
     }
 
     @Override
-    public void setChemicalInTank(int tank, @NotNull ChemicalStack   stack) {
+    public void setChemicalInTank(int tank, @NotNull ChemicalStack stack) {
     }
 
     @Override
