@@ -7,6 +7,7 @@ import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
+import moe.wolfgirl.powerfuljs.custom.CapabilityWrapper;
 import moe.wolfgirl.powerfuljs.custom.registries.LogicRegistry;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
 import moe.wolfgirl.powerfuljs.events.PowerfulInterceptTickingEvent;
@@ -26,6 +27,7 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingRegistry bindings) {
+        bindings.add("Capabilities", CapabilityWrapper.class);
         if (bindings.type() != ScriptType.SERVER) return;
         bindings.add("Rules", LogicRegistry.Rules.class);
         bindings.add("Effects", LogicRegistry.Effects.class);
@@ -37,5 +39,13 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
         if (manager.scriptType == ScriptType.SERVER) {
             PowerfulEvents.INTERCEPT_TICKING.post(new PowerfulInterceptTickingEvent());
         }
+    }
+
+    @Override
+    public void registerTypeWrappers(TypeWrapperRegistry registry) {
+        CapabilityJS.init();
+        registry.register(BlockCapability.class, CapabilityJS.BLOCK::wrap);
+        registry.register(ItemCapability.class, CapabilityJS.ITEM::wrap);
+        registry.register(EntityCapability.class, CapabilityJS.ENTITY::wrap);
     }
 }

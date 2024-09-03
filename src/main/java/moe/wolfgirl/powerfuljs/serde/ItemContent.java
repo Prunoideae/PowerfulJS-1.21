@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.custom.item;
+package moe.wolfgirl.powerfuljs.serde;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -67,5 +67,21 @@ public record ItemContent(List<ItemStack> items) {
         }
 
         return slots;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj instanceof ItemContent(List<ItemStack> items1)) {
+            if (items1 != null && items1.size() == items.size()) {
+                for (int i = 0; i < items.size(); i++) {
+                    if (!ItemStack.isSameItemSameComponents(items.get(i), items1.get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

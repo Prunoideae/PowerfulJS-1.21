@@ -1,6 +1,7 @@
 package moe.wolfgirl.powerfuljs;
 
 import moe.wolfgirl.powerfuljs.custom.Attachments;
+import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
 import moe.wolfgirl.powerfuljs.custom.Registries;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.MekAttachments;

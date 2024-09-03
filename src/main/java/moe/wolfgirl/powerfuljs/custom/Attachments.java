@@ -1,7 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom;
 
-import com.mojang.serialization.Codec;
-import moe.wolfgirl.powerfuljs.custom.item.ItemContent;
+import moe.wolfgirl.powerfuljs.serde.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;

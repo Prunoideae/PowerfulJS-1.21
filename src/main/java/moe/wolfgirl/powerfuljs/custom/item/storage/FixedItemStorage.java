@@ -1,21 +1,15 @@
 package moe.wolfgirl.powerfuljs.custom.item.storage;
 
-import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
-import dev.latvian.mods.rhino.ScriptRuntime;
-import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
-import dev.latvian.mods.rhino.type.JSOptionalParam;
 import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
-import moe.wolfgirl.powerfuljs.custom.item.ItemContent;
+import moe.wolfgirl.powerfuljs.serde.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,8 +18,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.MutableDataComponentHolder;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public abstract class FixedItemStorage extends BaseItemStorage {
     public static final ResourceLocation ID = MCID.create("fixed_storage_item");

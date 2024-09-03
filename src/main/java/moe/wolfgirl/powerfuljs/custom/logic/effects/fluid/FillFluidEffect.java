@@ -18,6 +18,6 @@ public class FillFluidEffect extends FluidEffect {
     protected void runEffect(BlockCapabilityCache<IFluidHandler, Direction> cache) {
         IFluidHandler handler = cache.getCapability();
         if (handler == null) return;
-        handler.drain(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+        handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
     }
 }

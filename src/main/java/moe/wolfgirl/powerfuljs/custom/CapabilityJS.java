@@ -43,6 +43,10 @@ public class CapabilityJS<B extends BaseCapability<?, ?>> {
         return registry.keySet().stream();
     }
 
+    public Stream<B> getCapabilities() {
+        return registry.values().stream();
+    }
+
     public static void init() {
 
         // Base Neoforge capabilities
@@ -60,6 +64,5 @@ public class CapabilityJS<B extends BaseCapability<?, ?>> {
         ENTITY.register(Capabilities.ItemHandler.ENTITY_AUTOMATION);
 
         // Mod stuffs (TBD)
-
     }
 }

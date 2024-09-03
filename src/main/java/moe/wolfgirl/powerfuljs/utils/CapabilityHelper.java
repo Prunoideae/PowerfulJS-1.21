@@ -12,7 +12,7 @@ public class CapabilityHelper {
             if (ingredient.test(slotItem)) {
                 count -= slotItem.getCount();
             }
-            if (count == 0) return true;
+            if (count <= 0) return true;
         }
         return false;
     }

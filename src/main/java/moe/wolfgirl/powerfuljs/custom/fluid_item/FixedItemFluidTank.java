@@ -5,6 +5,7 @@ import dev.latvian.mods.rhino.type.*;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
 import moe.wolfgirl.powerfuljs.custom.fluid.storage.FixedFluidTank;
+import moe.wolfgirl.powerfuljs.serde.FluidContent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -63,12 +64,12 @@ public class FixedItemFluidTank extends FixedFluidTank implements IFluidHandlerI
 
     @Override
     protected FluidStack getFluidData() {
-        return parent.getOrDefault(DataComponents.FLUID, FluidStack.EMPTY);
+        return parent.getOrDefault(DataComponents.FLUID, FluidContent.EMPTY).fluidStack();
     }
 
     @Override
     protected void setFluidData(FluidStack fluidStack) {
-        parent.set(DataComponents.FLUID, fluidStack);
+        parent.set(DataComponents.FLUID, fluidStack.isEmpty() ? FluidContent.EMPTY : new FluidContent(fluidStack));
     }
 
     @Override

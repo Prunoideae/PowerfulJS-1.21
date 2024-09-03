@@ -19,6 +19,8 @@ public abstract class AboutToFinishRule<T extends BlockEntity> extends MachineRu
 
     @Override
     protected boolean evaluateMachine(ServerLevel level, BlockPos pos, BlockState state, T machine) {
-        return getMaxProgress(machine) - getProgress(machine) <= spareTicks;
+        int progress = getProgress(machine);
+        if (progress == 0) return false;
+        return getMaxProgress(machine) - progress <= spareTicks;
     }
 }

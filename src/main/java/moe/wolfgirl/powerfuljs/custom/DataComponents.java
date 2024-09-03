@@ -1,6 +1,7 @@
 package moe.wolfgirl.powerfuljs.custom;
 
-import moe.wolfgirl.powerfuljs.custom.item.ItemContent;
+import moe.wolfgirl.powerfuljs.serde.FluidContent;
+import moe.wolfgirl.powerfuljs.serde.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,9 +15,9 @@ public class DataComponents {
             .networkSynchronized(ByteBufCodecs.VAR_INT)
             .build();
 
-    public static final DataComponentType<FluidStack> FLUID = DataComponentType.<FluidStack>builder()
-            .persistent(FluidStack.CODEC)
-            .networkSynchronized(FluidStack.STREAM_CODEC)
+    public static final DataComponentType<FluidContent> FLUID = DataComponentType.<FluidContent>builder()
+            .persistent(FluidContent.CODEC)
+            .networkSynchronized(FluidContent.STREAM_CODEC)
             .build();
 
     public static final DataComponentType<ItemContent> ITEM = DataComponentType.<ItemContent>builder()
