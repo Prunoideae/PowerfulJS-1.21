@@ -1,28 +1,35 @@
 package moe.wolfgirl.powerfuljs.custom.registries;
 
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.Effect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.Rule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.ToggleEnable;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.energy.DrainEnergyEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.energy.FillEnergyEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.fluid.DrainFluidEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.fluid.FillFluidEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.item.ExtractItemEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.effects.item.InsertItemEffect;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.*;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.CanExtractEnergy;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.CanReceiveEnergy;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.energy.HasEnergyRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.fluid.CanExtractFluid;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.fluid.CanReceiveFluid;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.fluid.HasFluidRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.item.CanExtractItem;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.item.CanInsertItem;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.item.HasItemRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.AlwaysRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.AndRule;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.rules.logic.OrRule;
+import dev.latvian.mods.kubejs.typings.Info;
+import moe.wolfgirl.powerfuljs.custom.logic.Effect;
+import moe.wolfgirl.powerfuljs.custom.logic.Rule;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.TickRate;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.ToggleEnable;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.DrainEnergyEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.FillEnergyEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.DrainFluidEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.FillFluidEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.FurnaceFuel;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.FurnaceProgress;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.item.ExtractItemEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.item.InsertItemEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanReceiveEnergy;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.HasEnergyRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.CanExtractFluid;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.CanReceiveFluid;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.HasFluidRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.item.CanExtractItem;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.item.CanInsertItem;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.item.HasItemRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AlwaysRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AndRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.OrRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.FurnaceAboutToFinishRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.world.*;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.FurnaceRunningRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.TickRateRule;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
@@ -38,6 +45,10 @@ import java.util.List;
 
 public class LogicRegistry {
     public static class Rules {
+        public static Rule always() {
+            return always(true);
+        }
+
         public static Rule always(boolean state) {
             return new AlwaysRule(state);
         }
@@ -118,12 +129,27 @@ public class LogicRegistry {
         public static Rule canInsertItem(ItemStack itemStack, @Nullable Direction direction) {
             return new CanInsertItem(itemStack, direction);
         }
+
+        /* Furnace */
+        public static Rule furnaceRunning() {
+            return new FurnaceRunningRule();
+        }
+
+        @Info("Test if the furnace is **exactly** one tick away from producing results. Must be run after any tick modification effect.")
+        public static Rule furnaceAboutToFinish() {
+            return new FurnaceAboutToFinishRule(1);
+        }
     }
 
     public static class Effects {
 
         public static Effect toggleEnable() {
             return new ToggleEnable();
+        }
+
+        @Info("Changes the tick speed to Nx of the original, e.g. 0.1 will make it 90% slower, and 2 will make it 2x faster.")
+        public static Effect changeTickSpeed(float tickSpeed) {
+            return new TickRate(tickSpeed);
         }
 
         /* Fluid handling */
@@ -151,6 +177,15 @@ public class LogicRegistry {
 
         public static Effect extractItem(ItemStack itemStack, @Nullable Direction context) {
             return new ExtractItemEffect(itemStack, context);
+        }
+
+        /* Furnace, it's the only 'machine' in minecraft lol */
+        public static Effect addFurnaceFuel(int fuelTicks) {
+            return new FurnaceFuel(fuelTicks);
+        }
+
+        public static Effect addFurnaceProgress(int progressTicks) {
+            return new FurnaceProgress(progressTicks);
         }
     }
 }

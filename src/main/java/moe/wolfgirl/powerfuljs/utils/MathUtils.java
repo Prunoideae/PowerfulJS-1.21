@@ -16,4 +16,12 @@ public class MathUtils {
         }
         return num;
     }
+
+    public static int max(int... numbers) {
+        int num = Integer.MIN_VALUE;
+        for (int number : numbers) {
+            if (number > num) num = number;
+        }
+        return num;
+    }
 }

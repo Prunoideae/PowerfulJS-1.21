@@ -4,10 +4,13 @@
     "package": "moe.wolfgirl.powerfuljs.mixin",
     "compatibilityLevel": "JAVA_8",
     "refmap": "powerfuljs.refmap.json",
+    "plugin": "moe.wolfgirl.powerfuljs.mixin.MixinPlugin",
     "mixins": [
         "BlockCapabilityInvalidator",
         "BlockTickerInterceptor",
-        "BlockTickingInterceptor"
+        "BlockTickingInterceptor",
+        "mekanism.FactoryRecipeAccessor",
+        "mekanism.MachineRecipeAccessor"
     ],
     "client": [
     ],

@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom;
 
+import com.mojang.serialization.Codec;
 import moe.wolfgirl.powerfuljs.custom.item.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.minecraft.util.ExtraCodecs;
@@ -23,12 +24,16 @@ public class Attachments {
             .serialize(FluidStack.CODEC.listOf())
             .build();
 
+    public static final AttachmentType<ItemContent> ITEM = AttachmentType.builder(ItemContent.EMPTY)
+            .serialize(ItemContent.CODEC)
+            .build();
+
     public static final AttachmentType<Unit> DISABLED = AttachmentType.builder(() -> Unit.INSTANCE)
             .serialize(Unit.CODEC)
             .build();
 
-    public static final AttachmentType<ItemContent> ITEM = AttachmentType.builder(ItemContent.EMPTY)
-            .serialize(ItemContent.CODEC)
+    public static final AttachmentType<Float> TICK_SPEED = AttachmentType.builder(() -> 1f)
+            .serialize(ExtraCodecs.POSITIVE_FLOAT)
             .build();
 
     public static void initAttachments(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
@@ -37,5 +42,6 @@ public class Attachments {
         helper.register(MCID.create("fluid_multitank"), FLUID_MULTITANK);
         helper.register(MCID.create("item"), ITEM);
         helper.register(MCID.create("disabled"), DISABLED);
+        helper.register(MCID.create("tick_speed"), TICK_SPEED);
     }
 }

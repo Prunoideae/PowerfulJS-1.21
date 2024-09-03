@@ -3,7 +3,7 @@ package moe.wolfgirl.powerfuljs.events;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.typings.Info;
 import moe.wolfgirl.powerfuljs.GameStates;
-import moe.wolfgirl.powerfuljs.custom.registries.logic.Rule;
+import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.List;

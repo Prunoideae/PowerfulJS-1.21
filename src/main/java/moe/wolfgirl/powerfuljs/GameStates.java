@@ -1,7 +1,7 @@
 package moe.wolfgirl.powerfuljs;
 
 
-import moe.wolfgirl.powerfuljs.custom.registries.logic.Rule;
+import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 

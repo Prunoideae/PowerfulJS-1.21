@@ -2,6 +2,8 @@ package moe.wolfgirl.powerfuljs.custom.mods.mekanism;
 
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.chemical.ConstantChemical;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.chemical.storage.FixedChemicalStorage;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.temperature.ConstantHeat;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.temperature.storage.FixedHeatStorage;
 import moe.wolfgirl.powerfuljs.custom.registries.BlockCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.EntityCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.ItemCapabilityRegistry;
@@ -16,5 +18,10 @@ public class MekRegistries {
         BlockCapabilityRegistry.register(ConstantChemical.BLOCK);
         ItemCapabilityRegistry.register(ConstantChemical.ITEM);
         EntityCapabilityRegistry.register(ConstantChemical.ENTITY);
+
+        BlockCapabilityRegistry.register(ConstantHeat.BLOCK);
+        BlockCapabilityRegistry.registerBE(ConstantHeat.BLOCK_ENTITY);
+
+        BlockCapabilityRegistry.registerBE(FixedHeatStorage.BLOCK_ENTITY);
     }
 }
