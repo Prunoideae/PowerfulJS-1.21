@@ -28,6 +28,7 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
     @Override
     public void registerBindings(BindingRegistry bindings) {
         bindings.add("Capabilities", CapabilityWrapper.class);
+
         if (bindings.type() != ScriptType.SERVER) return;
         bindings.add("Rules", LogicRegistry.Rules.class);
         bindings.add("Effects", LogicRegistry.Effects.class);

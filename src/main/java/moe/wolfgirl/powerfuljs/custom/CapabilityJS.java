@@ -48,21 +48,16 @@ public class CapabilityJS<B extends BaseCapability<?, ?>> {
     }
 
     public static void init() {
+        for (BlockCapability<?, ?> blockCapability : BlockCapability.getAll()) {
+            BLOCK.register(blockCapability);
+        }
 
-        // Base Neoforge capabilities
-        BLOCK.register(Capabilities.EnergyStorage.BLOCK);
-        ITEM.register(Capabilities.EnergyStorage.ITEM);
-        ENTITY.register(Capabilities.EnergyStorage.ENTITY);
+        for (ItemCapability<?, ?> itemCapability : ItemCapability.getAll()) {
+            ITEM.register(itemCapability);
+        }
 
-        BLOCK.register(Capabilities.FluidHandler.BLOCK);
-        ITEM.register(Capabilities.FluidHandler.ITEM);
-        ENTITY.register(Capabilities.FluidHandler.ENTITY);
-
-        BLOCK.register(Capabilities.ItemHandler.BLOCK);
-        ITEM.register(Capabilities.ItemHandler.ITEM);
-        ENTITY.register(Capabilities.ItemHandler.ENTITY);
-        ENTITY.register(Capabilities.ItemHandler.ENTITY_AUTOMATION);
-
-        // Mod stuffs (TBD)
+        for (EntityCapability<?, ?> entityCapability : EntityCapability.getAll()) {
+            ENTITY.register(entityCapability);
+        }
     }
 }
