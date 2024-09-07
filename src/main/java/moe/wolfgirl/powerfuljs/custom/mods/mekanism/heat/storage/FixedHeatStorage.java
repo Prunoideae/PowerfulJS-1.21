@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.custom.mods.mekanism.temperature.storage;
+package moe.wolfgirl.powerfuljs.custom.mods.mekanism.heat.storage;
 
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.type.RecordTypeInfo;

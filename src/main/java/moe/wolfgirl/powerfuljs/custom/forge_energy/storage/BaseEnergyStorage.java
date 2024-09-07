@@ -12,11 +12,15 @@ public abstract class BaseEnergyStorage implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int toReceive, boolean simulate) {
-        if (!canReceive() || toReceive <= 0) {
+        return receiveEnergy(toReceive, simulate, false);
+    }
+
+    public int receiveEnergy(int toReceive, boolean simulate, boolean forced) {
+        if ((!canReceive() && !forced) || toReceive <= 0) {
             return 0;
         }
         int energy = this.getEnergyStored();
-        int received = Mth.clamp(this.getMaxEnergyStored() - energy, 0, Math.min(this.getMaxReceive(), toReceive));
+        int received = Mth.clamp(this.getMaxEnergyStored() - energy, 0, forced ? toReceive : Math.min(this.getMaxReceive(), toReceive));
         if (received > 0) {
             if (!simulate) {
                 this.setEnergyData(energy + received);
@@ -29,12 +33,16 @@ public abstract class BaseEnergyStorage implements IEnergyStorage {
 
     @Override
     public int extractEnergy(int toExtract, boolean simulate) {
-        if (!canExtract() || toExtract <= 0) {
+        return extractEnergy(toExtract, simulate, false);
+    }
+
+    public int extractEnergy(int toExtract, boolean simulate, boolean forced) {
+        if ((!canExtract() && !forced) || toExtract <= 0) {
             return 0;
         }
 
         int energy = this.getEnergyStored();
-        int extracted = Math.min(energy, Math.min(this.getMaxExtract(), toExtract));
+        int extracted = Math.min(energy, forced ? toExtract : Math.min(this.getMaxExtract(), toExtract));
 
         if (extracted > 0) {
             if (!simulate) {

@@ -25,6 +25,10 @@ public abstract class ChemicalHandler implements IChemicalHandler {
 
     @Override
     public @NotNull ChemicalStack insertChemical(int tank, @NotNull ChemicalStack stack, @NotNull Action action) {
+        return insertChemical(tank, stack, action, false);
+    }
+
+    public @NotNull ChemicalStack insertChemical(int tank, @NotNull ChemicalStack stack, @NotNull Action action, boolean forced) {
         if (tank != 0 || stack.isEmpty() || !isValid(0, stack)) return stack;
         var currentStack = getChemicalData();
         if (!currentStack.isEmpty() && !ChemicalStack.isSameChemical(currentStack, stack)) {
@@ -34,7 +38,7 @@ public abstract class ChemicalHandler implements IChemicalHandler {
         long inserted = MathUtils.min(
                 getChemicalTankCapacity(0) - currentStack.getAmount(),
                 stack.getAmount(),
-                getMaxReceive()
+                forced ? Long.MAX_VALUE : getMaxReceive()
         );
 
         if (inserted <= 0) return stack;
@@ -50,12 +54,16 @@ public abstract class ChemicalHandler implements IChemicalHandler {
 
     @Override
     public @NotNull ChemicalStack extractChemical(int tank, long amount, @NotNull Action action) {
+        return extractChemical(tank, amount, action, false);
+    }
+
+    public @NotNull ChemicalStack extractChemical(int tank, long amount, @NotNull Action action, boolean forced) {
         if (tank != 0 || amount <= 0) return ChemicalStack.EMPTY;
         var currentStack = getChemicalData();
         long extracted = MathUtils.min(
                 currentStack.getAmount(),
                 amount,
-                getMaxExtract()
+                forced ? Long.MAX_VALUE : getMaxExtract()
         );
         if (extracted <= 0) return ChemicalStack.EMPTY;
         ChemicalStack extractedStack = currentStack.copyWithAmount(extracted);

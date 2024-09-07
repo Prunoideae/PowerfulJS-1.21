@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.custom.logic.effects.machine;
+package moe.wolfgirl.powerfuljs.custom.logic.effects.furnace;
 
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import net.minecraft.core.BlockPos;

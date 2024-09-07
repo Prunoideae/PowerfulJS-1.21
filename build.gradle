@@ -115,14 +115,12 @@ dependencies {
     api("dev.latvian.mods:rhino:$rhino_version") { transitive(false) }
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 
-    api("dev.latvian.mods:kubejs-mekanism-neoforge:$kubejs_mekanism_version")
     compileOnly("dev.architectury:architectury-neoforge:$architectury_version")
 
     implementation("curse.maven:probejs-585406:5651850")
 
     // Supported mods
     implementation "mekanism:Mekanism:1.21.1-${mekanism_version}"
-
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

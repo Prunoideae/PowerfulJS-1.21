@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.custom.mods.mekanism.temperature.storage;
+package moe.wolfgirl.powerfuljs.custom.mods.mekanism.heat.storage;
 
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatHandler;

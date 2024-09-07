@@ -10,6 +10,7 @@ import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
 import moe.wolfgirl.powerfuljs.events.PowerfulRegisterCapabilitiesEvent;
 import moe.wolfgirl.powerfuljs.utils.ModUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -32,11 +33,12 @@ public class ModEvents {
         });
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         PowerfulRegisterCapabilitiesEvent eventPJS = new PowerfulRegisterCapabilitiesEvent();
         PowerfulEvents.CAPABILITY.post(eventPJS);
         eventPJS.register(event);
+        CapabilityJS.init();
     }
 
     @SubscribeEvent

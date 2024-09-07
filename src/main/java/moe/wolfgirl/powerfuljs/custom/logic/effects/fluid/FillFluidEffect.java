@@ -8,10 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class FillFluidEffect extends FluidEffect {
     private final FluidStack fluidStack;
+    private final boolean forced;
 
-    public FillFluidEffect(FluidStack fluidStack, @Nullable Direction context) {
+    public FillFluidEffect(FluidStack fluidStack, boolean forced, @Nullable Direction context) {
         super(context);
         this.fluidStack = fluidStack;
+        this.forced = forced;
     }
 
     @Override

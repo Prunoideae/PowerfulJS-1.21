@@ -2,8 +2,8 @@ package moe.wolfgirl.powerfuljs.custom.mods.mekanism;
 
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.chemical.ConstantChemical;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.chemical.storage.FixedChemicalStorage;
-import moe.wolfgirl.powerfuljs.custom.mods.mekanism.temperature.ConstantHeat;
-import moe.wolfgirl.powerfuljs.custom.mods.mekanism.temperature.storage.FixedHeatStorage;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.heat.ConstantHeat;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.heat.storage.FixedHeatStorage;
 import moe.wolfgirl.powerfuljs.custom.registries.BlockCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.EntityCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.ItemCapabilityRegistry;

@@ -51,11 +51,15 @@ public abstract class BaseFluidTank implements IFluidHandler, IFluidTank {
 
     @Override
     public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
+        return fill(resource, action, false);
+    }
+
+    public int fill(@NotNull FluidStack resource, @NotNull FluidAction action, boolean forced) {
         if (resource.isEmpty() || !this.isFluidValid(resource)) return 0;
         FluidStack tankFluid = getFluid();
 
         int capacity = getCapacity();
-        int maxReceive = Math.min(resource.getAmount(), getMaxReceive());
+        int maxReceive = forced ? resource.getAmount() : Math.min(resource.getAmount(), getMaxReceive());
 
         if (action.simulate()) {
             if (tankFluid.isEmpty()) {
@@ -96,8 +100,12 @@ public abstract class BaseFluidTank implements IFluidHandler, IFluidTank {
 
     @Override
     public @NotNull FluidStack drain(int maxDrain, @NotNull FluidAction action) {
+        return drain(maxDrain, action, false);
+    }
+
+    public @NotNull FluidStack drain(int maxDrain, @NotNull FluidAction action, boolean forced) {
         FluidStack tankFluid = getFluid();
-        int drained = Math.min(getMaxExtract(), maxDrain);
+        int drained = forced ? maxDrain : Math.min(getMaxExtract(), maxDrain);
         drained = Math.min(tankFluid.getAmount(), drained);
 
         FluidStack drainedStack = tankFluid.copyWithAmount(drained);

@@ -1,5 +1,6 @@
-package moe.wolfgirl.powerfuljs.custom.logic.effects.machine;
+package moe.wolfgirl.powerfuljs.custom.logic.effects.furnace;
 
+import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.MachineProgress;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 public class FurnaceProgress extends MachineProgress<AbstractFurnaceBlockEntity> {

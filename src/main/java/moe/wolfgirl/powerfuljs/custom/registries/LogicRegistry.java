@@ -10,8 +10,8 @@ import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.DrainEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.FillEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.DrainFluidEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.FillFluidEffect;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.FurnaceFuel;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.FurnaceProgress;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.furnace.FurnaceFuel;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.furnace.FurnaceProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.ExtractItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.InsertItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
@@ -154,20 +154,36 @@ public class LogicRegistry {
 
         /* Fluid handling */
         public static Effect fillFluid(FluidStack fluidStack, @Nullable Direction direction) {
-            return new FillFluidEffect(fluidStack, direction);
+            return fillFluid(fluidStack, false, direction);
+        }
+
+        public static Effect fillFluid(FluidStack fluidStack, boolean forced, @Nullable Direction direction) {
+            return new FillFluidEffect(fluidStack, forced, direction);
         }
 
         public static Effect drainFluid(FluidStack fluidStack, @Nullable Direction direction) {
-            return new DrainFluidEffect(fluidStack, direction);
+            return drainFluid(fluidStack, false, direction);
+        }
+
+        public static Effect drainFluid(FluidStack fluidStack, boolean forced, @Nullable Direction direction) {
+            return new DrainFluidEffect(fluidStack, forced, direction);
         }
 
         /* Energy handling */
         public static Effect fillEnergy(int energy, @Nullable Direction direction) {
-            return new FillEnergyEffect(energy, direction);
+            return fillEnergy(energy, false, direction);
+        }
+
+        public static Effect fillEnergy(int energy, boolean forced, @Nullable Direction direction) {
+            return new FillEnergyEffect(energy, forced, direction);
         }
 
         public static Effect drainEnergy(int energy, @Nullable Direction direction) {
-            return new DrainEnergyEffect(energy, direction);
+            return drainEnergy(energy, false, direction);
+        }
+
+        public static Effect drainEnergy(int energy, boolean forced, @Nullable Direction direction) {
+            return new DrainEnergyEffect(energy, forced, direction);
         }
 
         /* Item handling */

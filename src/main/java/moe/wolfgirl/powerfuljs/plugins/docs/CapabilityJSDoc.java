@@ -53,7 +53,7 @@ public class CapabilityJSDoc extends ProbeJSPlugin {
 
     private void patchMethod(MethodDecl methodDecl, String flagName, String mapName) {
         methodDecl.variableTypes.add(Types.generic("T", Types.primitive(flagName)));
-        methodDecl.params.set(0, new ParamDecl("builderKey", Types.generic("T"), false, false));
+        methodDecl.params.set(0, new ParamDecl("capability", Types.generic("T"), false, false));
         methodDecl.returnType = Types.primitive("%s[T]".formatted(mapName));
     }
 
