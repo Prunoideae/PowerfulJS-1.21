@@ -24,7 +24,7 @@ public class DrainFluidEffect extends FluidEffect {
 
         if (!forced || !(fluidHandler instanceof BaseFluidTank baseFluidTank)) {
             fluidHandler.drain(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-        } else if (baseFluidTank.getFluid().isEmpty() || FluidStack.isSameFluidSameComponents(baseFluidTank.getFluid(), fluidStack)) {
+        } else if (!baseFluidTank.getFluid().isEmpty() && FluidStack.isSameFluidSameComponents(baseFluidTank.getFluid(), fluidStack)) {
             baseFluidTank.drain(fluidStack.getAmount(), IFluidHandler.FluidAction.EXECUTE, true);
         }
     }

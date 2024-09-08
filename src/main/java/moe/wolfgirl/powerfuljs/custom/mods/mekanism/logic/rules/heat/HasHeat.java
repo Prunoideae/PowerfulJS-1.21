@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class HasHeat extends CapabilityRule<IHeatHandler, @Nullable Direction> {
     private final double temperature;
 
-    protected HasHeat(double temperature, @Nullable Direction context) {
+    public HasHeat(double temperature, @Nullable Direction context) {
         super(Capabilities.HEAT, context);
         this.temperature = temperature;
     }

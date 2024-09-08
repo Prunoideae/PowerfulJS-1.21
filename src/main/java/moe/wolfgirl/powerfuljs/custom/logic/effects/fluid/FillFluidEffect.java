@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom.logic.effects.fluid;
 
+import moe.wolfgirl.powerfuljs.custom.fluid.storage.BaseFluidTank;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -20,6 +21,10 @@ public class FillFluidEffect extends FluidEffect {
     protected void runEffect(BlockCapabilityCache<IFluidHandler, Direction> cache) {
         IFluidHandler handler = cache.getCapability();
         if (handler == null) return;
-        handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+        if (!forced || !(handler instanceof BaseFluidTank baseFluidTank)) {
+            handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+        } else {
+            baseFluidTank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE, true);
+        }
     }
 }

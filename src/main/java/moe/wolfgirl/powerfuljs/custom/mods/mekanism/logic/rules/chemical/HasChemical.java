@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public class HasChemical extends ChemicalCapability {
     private final ChemicalStack chemicalStack;
 
-    protected HasChemical(ChemicalStack chemicalStack, @Nullable Direction context) {
+    public HasChemical(ChemicalStack chemicalStack, @Nullable Direction context) {
         super(context);
         this.chemicalStack = chemicalStack;
     }

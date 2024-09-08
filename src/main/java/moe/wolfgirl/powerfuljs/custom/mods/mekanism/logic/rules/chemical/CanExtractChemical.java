@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class CanExtractChemical extends ChemicalCapability {
     private final ChemicalStack chemicalStack;
 
-    protected CanExtractChemical(ChemicalStack chemicalStack, @Nullable Direction context) {
+    public CanExtractChemical(ChemicalStack chemicalStack, @Nullable Direction context) {
         super(context);
         this.chemicalStack = chemicalStack;
     }

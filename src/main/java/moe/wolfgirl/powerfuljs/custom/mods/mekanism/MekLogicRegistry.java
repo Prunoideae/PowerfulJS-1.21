@@ -9,6 +9,10 @@ import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.effects.chemical.FillC
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.effects.heat.AddHeat;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.effects.machine.MekFactoryProgress;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.effects.machine.MekProgress;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.chemical.CanExtractChemical;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.chemical.CanInsertChemical;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.chemical.HasChemical;
+import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.heat.HasHeat;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.machine.MekAboutToFinishRule;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.machine.MekFactoryAboutToFinishRule;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.logic.rules.machine.MekFactoryRunningRule;
@@ -34,6 +38,22 @@ public class MekLogicRegistry {
         @Info("Test if the machine is **exactly** one tick away from producing results. Must be run after any tick modification effect.")
         public static Rule factoryAboutToFinish() {
             return new MekFactoryAboutToFinishRule(1);
+        }
+
+        public static Rule hasHeat(double heat, @Nullable Direction direction) {
+            return new HasHeat(heat, direction);
+        }
+
+        public static Rule hasChemical(ChemicalStack chemicalStack, @Nullable Direction direction) {
+            return new HasChemical(chemicalStack, direction);
+        }
+
+        public static Rule canDrainChemical(ChemicalStack chemicalStack, @Nullable Direction direction) {
+            return new CanExtractChemical(chemicalStack, direction);
+        }
+
+        public static Rule canFillChemical(ChemicalStack chemicalStack, @Nullable Direction direction) {
+            return new CanInsertChemical(chemicalStack, direction);
         }
     }
 
