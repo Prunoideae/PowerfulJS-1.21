@@ -4,8 +4,8 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.TickRate;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.ToggleEnable;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.TickRate;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.ToggleEnable;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.DrainEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.FillEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.DrainFluidEffect;
@@ -14,6 +14,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.effects.furnace.FurnaceFuel;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.furnace.FurnaceProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.ExtractItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.InsertItemEffect;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.Chanced;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanReceiveEnergy;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.HasEnergyRule;
@@ -83,6 +84,14 @@ public class LogicRegistry {
             return new LightRule(brightness);
         }
 
+        public static Rule hasSunlight() {
+            return new CanSeeSkyRule();
+        }
+
+        public static Rule withinTime(int start, int end) {
+            return new TimeRule(start, end);
+        }
+
         public static Rule inBiome(TagKey<Biome> biomeTag) {
             return new InBiomeRule(biomeTag);
         }
@@ -138,6 +147,10 @@ public class LogicRegistry {
         @Info("Test if the furnace is **exactly** one tick away from producing results. Must be run after any tick modification effect.")
         public static Rule furnaceAboutToFinish() {
             return new FurnaceAboutToFinishRule(1);
+        }
+
+        public static Rule chanced(double chance) {
+            return new Chanced(chance);
         }
     }
 
