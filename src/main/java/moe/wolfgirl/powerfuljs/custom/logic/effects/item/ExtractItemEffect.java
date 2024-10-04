@@ -1,6 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom.logic.effects.item;
 
-import moe.wolfgirl.powerfuljs.utils.CapabilityHelper;
+import moe.wolfgirl.powerfuljs.utils.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -19,6 +19,6 @@ public class ExtractItemEffect extends ItemEffect {
     protected void runEffect(BlockCapabilityCache<IItemHandler, Direction> cache) {
         var cap = cache.getCapability();
         if (cap == null) return;
-        CapabilityHelper.extractItem(cap, itemStack, false);
+        CapabilityUtils.extractItem(cap, itemStack, false);
     }
 }

@@ -9,6 +9,7 @@
         "BlockCapabilityInvalidator",
         "BlockTickerInterceptor",
         "BlockTickingInterceptor",
+        "StageUpdateListener",
         "mekanism.FactoryRecipeAccessor",
         "mekanism.MachineRecipeAccessor"
     ],

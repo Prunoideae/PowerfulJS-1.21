@@ -4,7 +4,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public class CapabilityHelper {
+public class CapabilityUtils {
 
     public static boolean hasItem(IItemHandler handler, Ingredient ingredient, int count) {
         for (int i = 0; i < handler.getSlots(); i++) {

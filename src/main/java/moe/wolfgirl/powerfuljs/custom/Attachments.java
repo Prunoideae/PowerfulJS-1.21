@@ -1,7 +1,10 @@
 package moe.wolfgirl.powerfuljs.custom;
 
+import com.mojang.serialization.Codec;
 import moe.wolfgirl.powerfuljs.serde.ItemContent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
+import moe.wolfgirl.powerfuljs.utils.UUIDUtils;
+import moe.wolfgirl.probejs.lang.typescript.code.Code;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -9,6 +12,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Attachments {
     public static final AttachmentType<Integer> FORGE_ENERGY = AttachmentType.builder(() -> 0)
@@ -35,6 +39,10 @@ public class Attachments {
             .serialize(ExtraCodecs.POSITIVE_FLOAT)
             .build();
 
+    public static final AttachmentType<UUID> OWNER = AttachmentType.builder(UUID::randomUUID)
+            .serialize(UUIDUtils.CODEC)
+            .build();
+
     public static void initAttachments(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
@@ -42,5 +50,6 @@ public class Attachments {
         helper.register(MCID.create("item"), ITEM);
         helper.register(MCID.create("disabled"), DISABLED);
         helper.register(MCID.create("tick_speed"), TICK_SPEED);
+        helper.register(MCID.create("owner"), OWNER);
     }
 }

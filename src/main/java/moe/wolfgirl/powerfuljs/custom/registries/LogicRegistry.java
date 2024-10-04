@@ -28,6 +28,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AlwaysRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.OrRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.FurnaceAboutToFinishRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.StageRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.world.*;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.FurnaceRunningRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.TickRateRule;
@@ -74,6 +75,10 @@ public class LogicRegistry {
 
         public static Rule every(int ticks) {
             return new TickRateRule(ticks);
+        }
+
+        public static Rule ownerStage(String stage) {
+            return new StageRule(stage);
         }
 
         public static Rule higherThan(int y) {

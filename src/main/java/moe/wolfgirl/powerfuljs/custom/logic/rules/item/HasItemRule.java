@@ -1,7 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom.logic.rules.item;
 
-import moe.wolfgirl.powerfuljs.utils.CapabilityHelper;
-import moe.wolfgirl.probejs.ProbeJS;
+import moe.wolfgirl.powerfuljs.utils.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -23,6 +22,6 @@ public class HasItemRule extends ItemRule {
         var cap = capabilityCache.getCapability();
         if (cap == null) return false;
 
-        return CapabilityHelper.hasItem(cap, item, count);
+        return CapabilityUtils.hasItem(cap, item, count);
     }
 }

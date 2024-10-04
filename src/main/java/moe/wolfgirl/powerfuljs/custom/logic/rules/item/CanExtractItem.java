@@ -1,6 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom.logic.rules.item;
 
-import moe.wolfgirl.powerfuljs.utils.CapabilityHelper;
+import moe.wolfgirl.powerfuljs.utils.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -20,6 +20,6 @@ public class CanExtractItem extends ItemRule {
     protected boolean evaluateCap(BlockCapabilityCache<IItemHandler, Direction> capabilityCache) {
         var cap = capabilityCache.getCapability();
         if (cap == null) return false;
-        return CapabilityHelper.extractItem(cap, itemStack, true).getCount() == itemStack.getCount();
+        return CapabilityUtils.extractItem(cap, itemStack, true).getCount() == itemStack.getCount();
     }
 }
