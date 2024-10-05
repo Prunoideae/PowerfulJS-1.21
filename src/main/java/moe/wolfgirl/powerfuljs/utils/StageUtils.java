@@ -8,6 +8,12 @@ import java.util.*;
 public class StageUtils {
 
     public static class Cache {
+        public static final Cache EMPTY = new Cache(Set.of());
+
+        static {
+            EMPTY.invalidate();
+        }
+
         public final Set<String> stages;
         private boolean invalidated = false;
 
@@ -24,17 +30,18 @@ public class StageUtils {
         }
     }
 
-    private static final Map<UUID, Cache> stageCache = new HashMap<>();
+    private static final Map<String, Cache> stageCache = new HashMap<>();
 
     public static Cache get(UUID uuid) {
-        return stageCache.computeIfAbsent(uuid, u -> new Cache(Set.of()));
+        String uuidString = uuid.toString();
+        if (stageCache.containsKey(uuidString)) return stageCache.get(uuidString);
+        return Cache.EMPTY;
     }
 
     public static void initializePlayer(Player player) {
         Stages stages = player.kjs$getStages();
-        stageCache.computeIfPresent(player.getUUID(), (uuid, cache) -> {
-            cache.invalidate();
-            return new Cache(new HashSet<>(stages.getAll()));
-        });
+        String uuidString = player.getUUID().toString();
+        if (stageCache.containsKey(uuidString)) stageCache.get(uuidString).invalidate();
+        stageCache.put(uuidString, new Cache(new HashSet<>(stages.getAll())));
     }
 }

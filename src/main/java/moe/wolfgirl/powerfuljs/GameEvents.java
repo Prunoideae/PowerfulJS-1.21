@@ -4,6 +4,7 @@ import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.utils.StageUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -12,7 +13,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 @EventBusSubscriber
 public class GameEvents {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void assignOwner(BlockEvent.EntityPlaceEvent event) {
         if (event.getEntity() instanceof Player player) {
             BlockEntity blockEntity = event.getLevel().getBlockEntity(event.getPos());
