@@ -11,7 +11,8 @@
         "BlockTickingInterceptor",
         "StageUpdateListener",
         "mekanism.FactoryRecipeAccessor",
-        "mekanism.MachineRecipeAccessor"
+        "mekanism.MachineRecipeAccessor",
+        "stages.TagWrapperMixin"
     ],
     "client": [
     ],

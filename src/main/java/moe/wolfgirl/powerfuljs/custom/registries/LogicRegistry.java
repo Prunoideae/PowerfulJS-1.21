@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.EffectJS;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.TickRate;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.ToggleEnable;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.DrainEnergyEffect;
@@ -220,6 +221,11 @@ public class LogicRegistry {
 
         public static Effect addFurnaceProgress(int progressTicks) {
             return new FurnaceProgress(progressTicks);
+        }
+
+        @Info("Note that Rhino might be 10 or 100x slower than Java, so you shall not call this often for performance reason.")
+        public static Effect custom(EffectJS.Apply callback) {
+            return new EffectJS(callback);
         }
     }
 }

@@ -12,7 +12,6 @@ public class FurnaceFuel extends Effect {
     private final int ticks;
 
     public FurnaceFuel(int ticks) {
-        if (ticks <= 0) throw new RuntimeException("Must have fuel tick > 0!");
         this.ticks = ticks;
     }
 
@@ -21,8 +20,10 @@ public class FurnaceFuel extends Effect {
         if (condition && blockEntity instanceof AbstractFurnaceBlockEntity furnaceBlockEntity) {
             if (furnaceBlockEntity.litTime == 0) level.setBlock(pos, state.setValue(AbstractFurnaceBlock.LIT, true), 3);
             furnaceBlockEntity.litTime += ticks;
-            if (furnaceBlockEntity.litTime == 1) furnaceBlockEntity.litTime++;
-            if (furnaceBlockEntity.litDuration == 0) furnaceBlockEntity.litDuration = furnaceBlockEntity.litTime;
+            if (furnaceBlockEntity.litTime <= 1) furnaceBlockEntity.litTime = ticks > 0 ? 2 : 1;
+            if (furnaceBlockEntity.litDuration == 0 && ticks > 0) {
+                furnaceBlockEntity.litDuration = furnaceBlockEntity.litTime;
+            }
         }
     }
 }
