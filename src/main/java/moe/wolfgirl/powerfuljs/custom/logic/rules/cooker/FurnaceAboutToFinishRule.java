@@ -1,5 +1,6 @@
-package moe.wolfgirl.powerfuljs.custom.logic.rules.machine;
+package moe.wolfgirl.powerfuljs.custom.logic.rules.cooker;
 
+import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.AboutToFinishRule;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 public class FurnaceAboutToFinishRule extends AboutToFinishRule<AbstractFurnaceBlockEntity> {

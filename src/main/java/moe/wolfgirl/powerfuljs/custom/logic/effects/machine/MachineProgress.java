@@ -1,6 +1,5 @@
 package moe.wolfgirl.powerfuljs.custom.logic.effects.machine;
 
-import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.MachineRule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;

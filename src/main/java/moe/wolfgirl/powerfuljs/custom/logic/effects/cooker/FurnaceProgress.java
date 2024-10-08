@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.custom.logic.effects.furnace;
+package moe.wolfgirl.powerfuljs.custom.logic.effects.cooker;
 
 import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.MachineProgress;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;

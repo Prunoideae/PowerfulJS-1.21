@@ -10,6 +10,8 @@
         "BlockTickerInterceptor",
         "BlockTickingInterceptor",
         "StageUpdateListener",
+        "mekanism.ExtendEffects",
+        "mekanism.ExtendRules",
         "mekanism.FactoryRecipeAccessor",
         "mekanism.MachineRecipeAccessor",
         "stages.TagWrapperMixin"

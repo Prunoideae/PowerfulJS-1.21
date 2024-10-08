@@ -23,6 +23,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("mekanism") && !ModUtils.isModPresent("mekanism", "mekanism.common.Mekanism"))
             return false;
+        if (mixinClassName.contains("farmers_delight") && !ModUtils.isModPresent("farmerdelight", "vectorwing.farmersdelight.FarmersDelight")) {
+            return false;
+        }
         return true;
     }
 
