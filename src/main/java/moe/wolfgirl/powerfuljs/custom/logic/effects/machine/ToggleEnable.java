@@ -12,6 +12,6 @@ public class ToggleEnable extends Effect {
     @Override
     public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (condition && blockEntity.hasData(Attachments.DISABLED)) blockEntity.removeData(Attachments.DISABLED);
-        else blockEntity.setData(Attachments.DISABLED, Unit.INSTANCE);
+        else if (!condition) blockEntity.setData(Attachments.DISABLED, Unit.INSTANCE);
     }
 }

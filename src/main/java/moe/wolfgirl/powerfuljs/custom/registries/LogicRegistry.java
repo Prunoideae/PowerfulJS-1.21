@@ -19,6 +19,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.effects.item.InsertItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.reflective.ReflectiveAddProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.reflective.ReflectiveMultiProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.Chanced;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.RuleJS;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.cooker.CampfireAboutToFinishRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.cooker.CampfireRunningRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
@@ -53,6 +54,8 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class LogicRegistry {
     public static class Rules {
@@ -187,6 +190,11 @@ public class LogicRegistry {
         public Rule chanced(double chance) {
             return new Chanced(chance);
         }
+
+        @Info("Get a value from the block entity, then test the value to meet a certain criteria. The value is cached and test won't happen if unchanged.")
+        public <T> Rule custom(Function<BlockEntity, T> getter, Predicate<T> test) {
+            return new RuleJS<>(getter, test);
+        }
     }
 
     public static class Effects {
@@ -258,6 +266,12 @@ public class LogicRegistry {
             return new CampfireProgress(progressTicks);
         }
 
+        @Info("Add progress for a machine regardless the max progress of current work.")
+        public Effect genericProgress(Class<BlockEntity> machineClass, String progress, int ticks) throws NoSuchFieldException {
+            return genericProgress(machineClass, progress, null, ticks);
+        }
+
+        @Info("Add progress for a machine, this is aware of the case when a machine uses == check instead of >= check. Like minecraft furnaces.")
         public Effect genericProgress(Class<BlockEntity> machineClass, String progress, String maxProgress, int ticks) throws NoSuchFieldException {
             return new ReflectiveAddProgress(machineClass, ticks, progress, maxProgress);
         }

@@ -13,8 +13,12 @@ public class ReflectiveAddProgress extends MachineProgress<BlockEntity> {
         super(machineClass, ticks);
         this.progress = machineClass.getDeclaredField(progress);
         this.progress.setAccessible(true);
-        this.maxProgress = machineClass.getDeclaredField(maxProgress);
-        this.maxProgress.setAccessible(true);
+        if (maxProgress != null) {
+            this.maxProgress = machineClass.getDeclaredField(maxProgress);
+            this.maxProgress.setAccessible(true);
+        }else {
+            this.maxProgress = null;
+        }
     }
 
     @Override
@@ -38,7 +42,7 @@ public class ReflectiveAddProgress extends MachineProgress<BlockEntity> {
     @Override
     protected int getMaxProgress(BlockEntity machine) {
         try {
-            return this.maxProgress.getInt(machine);
+            return this.maxProgress != null ? this.maxProgress.getInt(machine): Integer.MAX_VALUE;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
