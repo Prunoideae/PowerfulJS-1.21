@@ -1,4 +1,9 @@
 {
+    "net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity": [
+        "moe/wolfgirl/powerfuljs/custom/logic/behavior/RecipeProvider",
+        "moe/wolfgirl/powerfuljs/custom/logic/behavior/ProgressProvider",
+        "moe/wolfgirl/powerfuljs/custom/logic/behavior/FuelProvider"
+    ],
     "net/minecraft/server/MinecraftServer": [
         "dev/latvian/mods/kubejs/core/MinecraftServerKJS"
     ],

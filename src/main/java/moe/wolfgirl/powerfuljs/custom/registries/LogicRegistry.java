@@ -179,11 +179,11 @@ public class LogicRegistry {
         }
 
         /* Reflective access of all simple blocks*/
-        public Rule genericRunning(Class<BlockEntity> machineClass, String progress) throws NoSuchFieldException {
+        public Rule genericRunning(Class<BlockEntity> machineClass, String progress) throws NoSuchFieldException, NoSuchMethodException {
             return new ReflectiveRunning(machineClass, progress);
         }
 
-        public Rule genericAboutToFinish(Class<BlockEntity> machineClass, String progress, String maxProgress) throws NoSuchFieldException {
+        public Rule genericAboutToFinish(Class<BlockEntity> machineClass, String progress, String maxProgress) throws NoSuchFieldException, NoSuchMethodException {
             return new ReflectiveAboutToFinish(machineClass, 1, progress, maxProgress);
         }
 
