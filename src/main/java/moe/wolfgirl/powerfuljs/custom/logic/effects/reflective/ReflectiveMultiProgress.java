@@ -1,46 +1,38 @@
 package moe.wolfgirl.powerfuljs.custom.logic.effects.reflective;
 
-import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.MachineMultiProgress;
+import moe.wolfgirl.powerfuljs.custom.logic.Effect;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.ReflectiveAccessor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
-public class ReflectiveMultiProgress extends MachineMultiProgress<BlockEntity> {
-    private final Field progress;
-    private final Field maxProgress;
+public class ReflectiveMultiProgress extends Effect {
+    private final ReflectiveAccessor progress;
+    private final ReflectiveAccessor maxProgress;
+    private final int ticks;
 
-    public ReflectiveMultiProgress(Class<BlockEntity> machineClass, int ticks, String progress, String maxProgress) throws NoSuchFieldException {
-        super(machineClass, ticks);
-
-        this.progress = machineClass.getDeclaredField(progress);
-        this.progress.setAccessible(true);
-        this.maxProgress = machineClass.getDeclaredField(maxProgress);
-        this.maxProgress.setAccessible(true);
+    public ReflectiveMultiProgress(Class<BlockEntity> machineClass, int ticks, String progress, String maxProgress) throws NoSuchFieldException, NoSuchMethodException {
+        this.ticks = ticks;
+        this.progress = ReflectiveAccessor.of(machineClass, progress);
+        this.maxProgress = maxProgress == null ? null : ReflectiveAccessor.of(machineClass, maxProgress);
     }
 
     @Override
-    protected void setProgress(int[] progress, BlockEntity machine) {
+    public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         try {
-            this.progress.set(progress, machine);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+            int[] progress = (int[]) this.progress.get(blockEntity);
+            int[] maxProgress = this.maxProgress == null ? null : (int[]) this.maxProgress.get(blockEntity);
+            int[] newProgress = new int[progress.length];
 
-    @Override
-    protected int[] getProgress(BlockEntity machine) {
-        try {
-            return (int[]) this.progress.get(machine);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    protected int[] getMaxProgress(BlockEntity machine) {
-        try {
-            return (int[]) this.maxProgress.get(machine);
-        } catch (IllegalAccessException e) {
+            for (int i = 0; i < progress.length; i++) {
+                int updatedProgress = Math.max(0, progress[i] + ticks);
+                newProgress[i] = Math.min(updatedProgress, maxProgress == null ? Integer.MAX_VALUE : maxProgress[i]);
+            }
+            this.progress.set(blockEntity, newProgress);
+        } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

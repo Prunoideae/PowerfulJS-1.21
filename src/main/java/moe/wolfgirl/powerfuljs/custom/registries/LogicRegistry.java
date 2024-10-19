@@ -5,23 +5,17 @@ import dev.latvian.mods.kubejs.typings.Info;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.EffectJS;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.cooker.CampfireProgress;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.TickRate;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.ToggleEnable;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.*;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.DrainEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.FillEnergyEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.DrainFluidEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.fluid.FillFluidEffect;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.cooker.FurnaceFuel;
-import moe.wolfgirl.powerfuljs.custom.logic.effects.cooker.FurnaceProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.ExtractItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.InsertItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.reflective.ReflectiveAddProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.reflective.ReflectiveMultiProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.Chanced;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.RuleJS;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.cooker.CampfireAboutToFinishRule;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.cooker.CampfireRunningRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanReceiveEnergy;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.HasEnergyRule;
@@ -34,15 +28,13 @@ import moe.wolfgirl.powerfuljs.custom.logic.rules.item.HasItemRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AlwaysRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.OrRule;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.cooker.FurnaceAboutToFinishRule;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.StageRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.*;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.reflective.ReflectiveAboutToFinish;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.reflective.ReflectiveRunning;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.world.*;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.cooker.FurnaceRunningRule;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.TickRateRule;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -54,6 +46,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -158,24 +151,17 @@ public class LogicRegistry {
             return new CanInsertItem(itemStack, direction);
         }
 
-        /* Furnace */
-        public Rule furnaceRunning() {
-            return new FurnaceRunningRule();
+        /* Machine */
+        public Rule aboutToFinish() {
+            return new MachineAboutToFinish(1);
         }
 
-        @Info("Test if the furnace is **exactly** one tick away from producing results. Must be run after any tick modification effect.")
-        public Rule furnaceAboutToFinish() {
-            return new FurnaceAboutToFinishRule(1);
+        public Rule running() {
+            return new MachineRunning();
         }
 
-        /* Campfire */
-        public Rule campfireRunning() {
-            return new CampfireRunningRule();
-        }
-
-        @Info("Test if the campfire is **exactly** one tick away from producing results. Must be run after any tick modification effect. When cooking multiple things, the slowest item will be counted.")
-        public Rule campfireAboutToFinish() {
-            return new CampfireAboutToFinishRule(1);
+        public Rule doingRecipe(ResourceLocation... recipes) {
+            return new MachineRunningRecipe(Set.of(recipes));
         }
 
         /* Reflective access of all simple blocks*/
@@ -252,31 +238,34 @@ public class LogicRegistry {
             return new ExtractItemEffect(itemStack, context);
         }
 
-        /* Furnace, it's the only 'machine' in minecraft lol */
-        public Effect addFurnaceFuel(int fuelTicks) {
-            return new FurnaceFuel(fuelTicks);
+        /* Machine */
+        public Effect addFuel(int fuelTicks) {
+            return new MachineAddFuel(fuelTicks);
         }
 
-        public Effect addFurnaceProgress(int progressTicks) {
-            return new FurnaceProgress(progressTicks);
+        public Effect addProgress(int progressTicks) {
+            return new MachineAddProgress(progressTicks);
         }
 
-        /* Well and campfire*/
-        public Effect addCampfireProgress(int progressTicks) {
-            return new CampfireProgress(progressTicks);
+        public Effect clearProgress() {
+            return new MachineClearProgress();
         }
 
         @Info("Add progress for a machine regardless the max progress of current work.")
-        public Effect genericProgress(Class<BlockEntity> machineClass, String progress, int ticks) throws NoSuchFieldException {
+        public Effect genericProgress(Class<BlockEntity> machineClass, String progress, int ticks) throws NoSuchFieldException, NoSuchMethodException {
             return genericProgress(machineClass, progress, null, ticks);
         }
 
         @Info("Add progress for a machine, this is aware of the case when a machine uses == check instead of >= check. Like minecraft furnaces.")
-        public Effect genericProgress(Class<BlockEntity> machineClass, String progress, String maxProgress, int ticks) throws NoSuchFieldException {
+        public Effect genericProgress(Class<BlockEntity> machineClass, String progress, String maxProgress, int ticks) throws NoSuchFieldException, NoSuchMethodException {
             return new ReflectiveAddProgress(machineClass, ticks, progress, maxProgress);
         }
 
-        public Effect genericMultiProgress(Class<BlockEntity> machineClass, String progress, String maxProgress, int ticks) throws NoSuchFieldException {
+        public Effect genericMultiProgress(Class<BlockEntity> machineClass, String progress, int ticks) throws NoSuchFieldException, NoSuchMethodException {
+            return genericMultiProgress(machineClass, progress, null, ticks);
+        }
+
+        public Effect genericMultiProgress(Class<BlockEntity> machineClass, String progress, String maxProgress, int ticks) throws NoSuchFieldException, NoSuchMethodException {
             return new ReflectiveMultiProgress(machineClass, ticks, progress, maxProgress);
         }
 

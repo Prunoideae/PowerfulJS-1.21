@@ -4,6 +4,8 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 
 @HideFromJS
 public interface MultiProgressProvider {
+    int pjs$getSlots();
+
     int[] pjs$getProgress();
 
     int[] pjs$getMaxProgress();

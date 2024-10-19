@@ -14,6 +14,7 @@
         "mekanism.ExtendRules",
         "mekanism.FactoryRecipeAccessor",
         "mekanism.MachineRecipeAccessor",
+        "minecraft.CampfireMixin",
         "minecraft.FurnaceMixin",
         "stages.TagWrapperMixin"
     ],

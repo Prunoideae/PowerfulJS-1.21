@@ -3,20 +3,22 @@ package moe.wolfgirl.powerfuljs.mixin.minecraft;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.FuelProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-
-import javax.annotation.Nullable;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, FuelProvider {
-
-    @Shadow
-    @Nullable
-    public abstract RecipeHolder<?> getRecipeUsed();
 
     @Shadow
     public int cookingProgress;
@@ -30,10 +32,22 @@ public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, 
     @Shadow
     public int litDuration;
 
+    @Shadow
+    protected NonNullList<ItemStack> items;
+    @Shadow
+    @Final
+    private RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
+
+    @Unique
+    public AbstractFurnaceBlockEntity pjs$getSelf() {
+        return (AbstractFurnaceBlockEntity) (Object) this;
+    }
+
     @Override
     public ResourceLocation pjs$getRunningRecipe() {
-        RecipeHolder<?> used = getRecipeUsed();
-        return used == null ? null : used.id();
+        return quickCheck.getRecipeFor(new SingleRecipeInput(items.getFirst()), pjs$getSelf().getLevel())
+                .map(RecipeHolder::id)
+                .orElse(null);
     }
 
     @Override
@@ -57,17 +71,22 @@ public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, 
     }
 
     @Override
-    public int pjs$getMaxFuelTime() {
-        return this.litDuration;
-    }
-
-    @Override
     public void pjs$setFuelTime(int fuelTime) {
-        this.litTime = fuelTime;
-    }
+        fuelTime = Math.max(0, fuelTime);
+        if (fuelTime == 1 && this.litTime == 0) fuelTime++; // Prevent tick flickering
 
-    @Override
-    public void pjs$setMaxFuelTime(int maxFuelTime) {
-        this.litDuration = maxFuelTime;
+        if (fuelTime > 0 && this.litTime == 0) {
+            AbstractFurnaceBlockEntity self = pjs$getSelf();
+            if (self.getLevel() != null) {
+                self.getLevel().setBlock(
+                        self.getBlockPos(),
+                        self.getBlockState().setValue(AbstractFurnaceBlock.LIT, true),
+                        3
+                );
+            }
+        }
+
+        this.litDuration = fuelTime;
+        this.litTime = fuelTime;
     }
 }
