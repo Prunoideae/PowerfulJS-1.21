@@ -3,6 +3,7 @@ package moe.wolfgirl.powerfuljs.mixin.minecraft;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.FuelProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.TickCache;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -39,15 +40,25 @@ public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, 
     private RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
 
     @Unique
+    private TickCache<ResourceLocation> pjs$cache;
+
+    @Unique
     public AbstractFurnaceBlockEntity pjs$getSelf() {
         return (AbstractFurnaceBlockEntity) (Object) this;
     }
 
     @Override
     public ResourceLocation pjs$getRunningRecipe() {
-        return quickCheck.getRecipeFor(new SingleRecipeInput(items.getFirst()), pjs$getSelf().getLevel())
-                .map(RecipeHolder::id)
-                .orElse(null);
+        if (pjs$cache == null) {
+            pjs$cache = new TickCache<>(
+                    pjs$getSelf().getLevel()::getGameTime,
+                    () -> quickCheck.getRecipeFor(new SingleRecipeInput(items.getFirst()), pjs$getSelf().getLevel())
+                            .map(RecipeHolder::id)
+                            .orElse(null)
+            );
+        }
+
+        return pjs$cache.get();
     }
 
     @Override
