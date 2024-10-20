@@ -108,6 +108,10 @@ public class LogicRegistry {
             return new InBiomeRule(biomeTag);
         }
 
+        public Rule powered() {
+            return new RedstoneRule();
+        }
+
         /* Fluid handling */
         public Rule hasFluid(SizedFluidIngredient fluidIngredient, @Nullable Direction direction) {
             return new HasFluidRule(fluidIngredient, direction);
