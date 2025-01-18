@@ -108,4 +108,24 @@ public abstract class Rule {
             }
         }
     }
+
+    public static class PowerfulJSDefaultTicker<T extends BlockEntity> implements BlockEntityTicker<T> {
+        private final BlockEntityTicker<T> original;
+        private float ticks = 0;
+
+        public PowerfulJSDefaultTicker(BlockEntityTicker<T> original) {
+            this.original = original;
+        }
+
+        @Override
+        public void tick(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, T blockEntity) {
+            if (!blockEntity.hasData(Attachments.DISABLED)) {
+                ticks += blockEntity.getData(Attachments.TICK_SPEED);
+                while (ticks >= 1f) {
+                    original.tick(level, pos, state, blockEntity);
+                    ticks--;
+                }
+            }
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package moe.wolfgirl.powerfuljs.mixin;
 
 import moe.wolfgirl.powerfuljs.GameStates;
+import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -29,15 +30,7 @@ public abstract class BlockTickingInterceptor {
                     .get(blockEntity.getType())
                     .createTicker(value);
         } else {
-            instance.ticker = value;
+            instance.ticker = new Rule.PowerfulJSDefaultTicker<>(value);
         }
-        /*
-        Every(20tick).then(
-            Or(
-                Property(LIT=false),
-                CanDrain(LAVA, 1).then(Drain(LAVA, 1))
-            ).apply(ToggleEnable())
-        )
-        */
     }
 }
