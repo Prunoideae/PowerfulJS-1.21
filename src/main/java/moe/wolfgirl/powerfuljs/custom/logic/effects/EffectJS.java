@@ -1,6 +1,7 @@
 package moe.wolfgirl.powerfuljs.custom.logic.effects;
 
-import dev.latvian.mods.kubejs.level.BlockContainerJS;
+
+import dev.latvian.mods.kubejs.level.LevelBlock;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -16,11 +17,11 @@ public class EffectJS extends Effect {
 
     @FunctionalInterface
     public interface Apply {
-        void apply(BlockContainerJS block);
+        void apply(LevelBlock block);
     }
 
     @Override
     public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        if (condition) this.apply.apply(new BlockContainerJS(blockEntity));
+        if (condition) this.apply.apply(level.kjs$getBlock(blockEntity));
     }
 }
