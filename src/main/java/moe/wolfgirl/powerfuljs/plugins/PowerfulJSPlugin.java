@@ -8,7 +8,6 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.CapabilityWrapper;
-import moe.wolfgirl.powerfuljs.custom.registries.LogicRegistry;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
 import moe.wolfgirl.powerfuljs.events.PowerfulInterceptTickingEvent;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -25,10 +24,6 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
     @Override
     public void registerBindings(BindingRegistry bindings) {
         bindings.add("Capabilities", CapabilityWrapper.class);
-
-        if (bindings.type() != ScriptType.SERVER) return;
-        bindings.add("Rules", LogicRegistry.Rules.INSTANCE);
-        bindings.add("Effects", LogicRegistry.Effects.INSTANCE);
     }
 
     @Override

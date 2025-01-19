@@ -2,8 +2,10 @@ package moe.wolfgirl.powerfuljs.events;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.util.ClassWrapper;
 import moe.wolfgirl.powerfuljs.GameStates;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
+import moe.wolfgirl.powerfuljs.custom.registries.LogicRegistry;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.List;
@@ -14,6 +16,14 @@ public class PowerfulInterceptTickingEvent implements KubeEvent {
     public PowerfulInterceptTickingEvent() {
         GameStates.INTERCEPTED_BLOCK_ENTITIES.clear();
         GameStates.FORCED_TICKED_BLOCK_ENTITIES.clear();
+    }
+
+    public LogicRegistry.Rules getRules() {
+        return LogicRegistry.Rules.INSTANCE;
+    }
+
+    public LogicRegistry.Effects getEffects() {
+        return LogicRegistry.Effects.INSTANCE;
     }
 
     @Info("Intercept the ticking logic of a block entity. The supplier is important to ensure one ruleset is created for every instance of block entities.")
