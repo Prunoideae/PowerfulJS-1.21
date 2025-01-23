@@ -1,10 +1,9 @@
 package moe.wolfgirl.powerfuljs.custom;
 
-import com.mojang.serialization.Codec;
 import moe.wolfgirl.powerfuljs.serde.ItemContent;
+import moe.wolfgirl.powerfuljs.serde.TickModifiers;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import moe.wolfgirl.powerfuljs.utils.UUIDUtils;
-import moe.wolfgirl.probejs.lang.typescript.code.Code;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Unit;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -35,8 +34,8 @@ public class Attachments {
             .serialize(Unit.CODEC)
             .build();
 
-    public static final AttachmentType<Float> TICK_SPEED = AttachmentType.builder(() -> 1f)
-            .serialize(ExtraCodecs.POSITIVE_FLOAT)
+    public static final AttachmentType<TickModifiers> TICK_SPEED = AttachmentType.builder(() -> TickModifiers.EMPTY)
+            .serialize(TickModifiers.CODEC)
             .build();
 
     public static final AttachmentType<UUID> OWNER = AttachmentType.builder(UUID::randomUUID)

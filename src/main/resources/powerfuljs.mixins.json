@@ -10,6 +10,7 @@
         "BlockEntityMixin",
         "BlockTickerInterceptor",
         "BlockTickingInterceptor",
+        "LevelMixin",
         "StageUpdateListener",
         "farmers_delight.CookingPotMixin",
         "farmers_delight.SkilletMixin",

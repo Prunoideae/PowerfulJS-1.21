@@ -6,6 +6,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AlwaysRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.NotRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.OrRule;
+import moe.wolfgirl.powerfuljs.serde.TickModifiers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -74,16 +76,20 @@ public abstract class Rule {
     }
 
     public record RuleSet(Supplier<List<Rule>> rules) {
-        public <T extends BlockEntity> BlockEntityTicker<T> createTicker(BlockEntityTicker<T> original) {
-            // We create a set of rules each time we create a ticker, so we ensure that each ruleset is exclusive to each
-            // instance of BE.
-            return new PowerfulJSTicker<>(this.rules.get(), original);
+        public static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Collection<RuleSet> ruleSets, BlockEntityTicker<T> original) {
+            List<Rule> allRules = new ArrayList<>();
+            for (RuleSet ruleSet : ruleSets) {
+                allRules.addAll(ruleSet.rules.get());
+            }
+            return new PowerfulJSTicker<>(List.copyOf(allRules), original);
         }
     }
 
     private static class PowerfulJSTicker<T extends BlockEntity> implements BlockEntityTicker<T> {
         private final List<Rule> rules;
         private float ticks = 0;
+        private float tickSpeed = 1;
+        private TickModifiers modifiers = TickModifiers.EMPTY;
         private final BlockEntityTicker<T> original;
 
         private PowerfulJSTicker(List<Rule> rules, BlockEntityTicker<T> original) {
@@ -100,7 +106,13 @@ public abstract class Rule {
             }
 
             if (!blockEntity.hasData(Attachments.DISABLED)) {
-                ticks += blockEntity.getData(Attachments.TICK_SPEED);
+                TickModifiers tickModifiers = blockEntity.getData(Attachments.TICK_SPEED);
+                if (modifiers != tickModifiers) {
+                    modifiers = tickModifiers;
+                    tickSpeed = modifiers.getTickSpeed();
+                }
+
+                ticks += tickSpeed;
                 while (ticks >= 1f) {
                     original.tick(level, pos, state, blockEntity);
                     ticks--;
@@ -112,6 +124,8 @@ public abstract class Rule {
     public static class PowerfulJSDefaultTicker<T extends BlockEntity> implements BlockEntityTicker<T> {
         private final BlockEntityTicker<T> original;
         private float ticks = 0;
+        private float tickSpeed = 1;
+        private TickModifiers modifiers = TickModifiers.EMPTY;
 
         public PowerfulJSDefaultTicker(BlockEntityTicker<T> original) {
             this.original = original;
@@ -120,7 +134,13 @@ public abstract class Rule {
         @Override
         public void tick(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, T blockEntity) {
             if (!blockEntity.hasData(Attachments.DISABLED)) {
-                ticks += blockEntity.getData(Attachments.TICK_SPEED);
+                TickModifiers tickModifiers = blockEntity.getData(Attachments.TICK_SPEED);
+                if (modifiers != tickModifiers) {
+                    modifiers = tickModifiers;
+                    tickSpeed = modifiers.getTickSpeed();
+                }
+
+                ticks += tickSpeed;
                 while (ticks >= 1f) {
                     original.tick(level, pos, state, blockEntity);
                     ticks--;

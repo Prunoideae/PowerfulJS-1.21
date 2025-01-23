@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.typings.Info;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
+import moe.wolfgirl.powerfuljs.custom.logic.effects.CompositeEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.EffectJS;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.machine.*;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.energy.DrainEnergyEffect;
@@ -32,6 +33,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.*;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.reflective.ReflectiveAboutToFinish;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.reflective.ReflectiveRunning;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.world.*;
+import moe.wolfgirl.powerfuljs.serde.TickModifiers;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -177,6 +180,19 @@ public class LogicRegistry {
             return new ReflectiveAboutToFinish(machineClass, 1, progress, maxProgress);
         }
 
+        /* Attachments */
+        public <T extends Comparable<T>> Rule testData(AttachmentType<T> attachmentType, T criteria, AttachmentRule.CompareAction action) {
+            return new AttachmentRule.NativeComparable<>(attachmentType, criteria, action);
+        }
+
+        public <T> Rule customTestData(AttachmentType<T> attachmentType, Predicate<T> test) {
+            return new AttachmentRule.Custom<>(attachmentType, test);
+        }
+
+        public Rule hasData(AttachmentType<?> attachmentType) {
+            return new AttachmentRule.Present(attachmentType);
+        }
+
         public Rule chanced(double chance) {
             return new Chanced(chance);
         }
@@ -185,6 +201,8 @@ public class LogicRegistry {
         public <T> Rule custom(Function<BlockEntity, T> getter, Predicate<T> test) {
             return new RuleJS<>(getter, test);
         }
+
+
     }
 
     public static class Effects {
@@ -194,8 +212,8 @@ public class LogicRegistry {
             return new ToggleEnable();
         }
 
-        @Info("Changes the tick speed to Nx of the original, e.g. 0.1 will make it 90% slower, and 2 will make it 2x faster.")
-        public Effect changeTickSpeed(float tickSpeed) {
+        @Info("Changes the tick speed. An id is needed to prevent operation conflicts.")
+        public Effect modifyTick(TickModifiers.TickModifier tickSpeed) {
             return new TickRate(tickSpeed);
         }
 
@@ -276,6 +294,10 @@ public class LogicRegistry {
         @Info("Note that Rhino might be 10 or 100x slower than Java, so you shall not call this often for performance reason.")
         public Effect custom(EffectJS.Apply callback) {
             return new EffectJS(callback);
+        }
+
+        public Effect composite(Rule... rules) {
+            return new CompositeEffect(List.of(rules));
         }
     }
 }

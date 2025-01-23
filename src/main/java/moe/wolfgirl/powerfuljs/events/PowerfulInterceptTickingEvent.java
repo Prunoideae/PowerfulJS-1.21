@@ -33,6 +33,9 @@ public class PowerfulInterceptTickingEvent implements KubeEvent {
 
     @Info("Force a block entity to be ticked or not, returning false will disable its original ticking logic.")
     public void forceTicker(BlockEntityType<?> blockEntityType, boolean ticked) {
+        if (GameStates.FORCED_TICKED_BLOCK_ENTITIES.containsKey(blockEntityType)) {
+            throw new RuntimeException("Ticking status of %s is already modified!".formatted(blockEntityType));
+        }
         GameStates.FORCED_TICKED_BLOCK_ENTITIES.put(blockEntityType, ticked);
     }
 }

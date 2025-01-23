@@ -26,9 +26,7 @@ public abstract class BlockTickingInterceptor {
     @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/chunk/LevelChunk$BoundTickingBlockEntity;ticker:Lnet/minecraft/world/level/block/entity/BlockEntityTicker;", opcode = Opcodes.PUTFIELD))
     private <T extends BlockEntity> void wrapTicker(LevelChunk.BoundTickingBlockEntity<T> instance, BlockEntityTicker<T> value) {
         if (GameStates.INTERCEPTED_BLOCK_ENTITIES.containsKey(blockEntity.getType())) {
-            instance.ticker = GameStates.INTERCEPTED_BLOCK_ENTITIES
-                    .get(blockEntity.getType())
-                    .createTicker(value);
+            instance.ticker = Rule.RuleSet.createTicker(GameStates.INTERCEPTED_BLOCK_ENTITIES.get(blockEntity.getType()), value);
         } else {
             instance.ticker = new Rule.PowerfulJSDefaultTicker<>(value);
         }
