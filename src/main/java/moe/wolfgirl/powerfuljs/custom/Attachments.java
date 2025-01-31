@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom;
 
+import moe.wolfgirl.powerfuljs.serde.ChunkDataStorage;
 import moe.wolfgirl.powerfuljs.serde.ItemContent;
 import moe.wolfgirl.powerfuljs.serde.TickModifiers;
 import moe.wolfgirl.powerfuljs.utils.MCID;
@@ -42,6 +43,10 @@ public class Attachments {
             .serialize(UUIDUtils.CODEC)
             .build();
 
+    public static final AttachmentType<ChunkDataStorage> CHUNK_DATA = AttachmentType.builder(ChunkDataStorage::newEmpty)
+            .serialize(ChunkDataStorage.CODEC)
+            .build();
+
     public static void initAttachments(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
@@ -50,5 +55,6 @@ public class Attachments {
         helper.register(MCID.create("disabled"), DISABLED);
         helper.register(MCID.create("tick_speed"), TICK_SPEED);
         helper.register(MCID.create("owner"), OWNER);
+        helper.register(MCID.create("chunk_data"), CHUNK_DATA);
     }
 }

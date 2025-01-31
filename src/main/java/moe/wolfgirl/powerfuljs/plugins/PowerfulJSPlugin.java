@@ -14,6 +14,7 @@ import moe.wolfgirl.powerfuljs.custom.attachment.ContentTypes;
 import moe.wolfgirl.powerfuljs.custom.attachment.PrimitiveTypes;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
 import moe.wolfgirl.powerfuljs.events.PowerfulInterceptTickingEvent;
+import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -35,16 +36,16 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.of(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, reg -> {
-            reg.add("int", PrimitiveTypes.IntegerType.class, PrimitiveTypes.IntegerType::new);
-            reg.add("float", PrimitiveTypes.FloatType.class, PrimitiveTypes.FloatType::new);
-            reg.add("string", PrimitiveTypes.StringType.class, PrimitiveTypes.StringType::new);
-            reg.add("boolean", PrimitiveTypes.BoolType.class, PrimitiveTypes.BoolType::new);
-            reg.add("custom", PrimitiveTypes.ObjectType.class, PrimitiveTypes.ObjectType::new);
+            reg.add(MCID.create("int"), PrimitiveTypes.IntegerType.class, PrimitiveTypes.IntegerType::new);
+            reg.add(MCID.create("float"), PrimitiveTypes.FloatType.class, PrimitiveTypes.FloatType::new);
+            reg.add(MCID.create("string"), PrimitiveTypes.StringType.class, PrimitiveTypes.StringType::new);
+            reg.add(MCID.create("boolean"), PrimitiveTypes.BoolType.class, PrimitiveTypes.BoolType::new);
+            reg.add(MCID.create("custom"), PrimitiveTypes.ObjectType.class, PrimitiveTypes.ObjectType::new);
 
-            reg.add("itemstack", ContentTypes.ItemStackType.class, ContentTypes.ItemStackType::new);
-            reg.add("fluidstack", ContentTypes.FluidStackType.class, ContentTypes.FluidStackType::new);
-            reg.add("potion_contents", ContentTypes.PotionType.class, PotionBuilder::new);
-            reg.add("enchantments", ContentTypes.EnchantmentType.class, ContentTypes.EnchantmentType::new);
+            reg.add(MCID.create("itemstack"), ContentTypes.ItemStackType.class, ContentTypes.ItemStackType::new);
+            reg.add(MCID.create("fluidstack"), ContentTypes.FluidStackType.class, ContentTypes.FluidStackType::new);
+            reg.add(MCID.create("potion_contents"), ContentTypes.PotionType.class, PotionBuilder::new);
+            reg.add(MCID.create("enchantments"), ContentTypes.EnchantmentType.class, ContentTypes.EnchantmentType::new);
         });
     }
 
