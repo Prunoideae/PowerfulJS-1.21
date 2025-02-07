@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.custom.logic.rules.world;
+package moe.wolfgirl.powerfuljs.custom.logic.rules;
 
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import net.minecraft.core.BlockPos;

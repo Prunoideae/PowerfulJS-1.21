@@ -15,6 +15,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.effects.item.ExtractItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.item.InsertItemEffect;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.reflective.ReflectiveAddProgress;
 import moe.wolfgirl.powerfuljs.custom.logic.effects.reflective.ReflectiveMultiProgress;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.AttachmentRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.Chanced;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.RuleJS;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
@@ -38,6 +39,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.biome.Biome;
@@ -197,12 +199,18 @@ public class LogicRegistry {
             return new Chanced(chance);
         }
 
+        public Rule difficulty(Difficulty difficulty) {
+            return new DifficultyRule(difficulty);
+        }
+
+        public Rule packMode(String packMode) {
+            return new PackModeRule(packMode);
+        }
+
         @Info("Get a value from the block entity, then test the value to meet a certain criteria. The value is cached and test won't happen if unchanged.")
         public <T> Rule custom(Function<BlockEntity, T> getter, Predicate<T> test) {
             return new RuleJS<>(getter, test);
         }
-
-
     }
 
     public static class Effects {

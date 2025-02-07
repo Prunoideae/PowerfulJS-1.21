@@ -7,5 +7,5 @@ public interface PowerfulEvents {
     EventGroup GROUP = EventGroup.of("PowerfulEvents");
 
     EventHandler CAPABILITY = GROUP.startup("registerCapabilities", () -> PowerfulRegisterCapabilitiesEvent.class);
-    EventHandler INTERCEPT_TICKING = GROUP.server("registerInterceptors", () -> PowerfulInterceptTickingEvent.class);
+    EventHandler MODIFY_BLOCK_ENTITY = GROUP.server("modifyBlockEntity", () -> PowerfulModifyBLockEntityEvent.class);
 }

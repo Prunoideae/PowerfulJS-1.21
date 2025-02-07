@@ -7,11 +7,16 @@ import moe.wolfgirl.powerfuljs.GameStates;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.serde.TickModifiers;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+
+import java.util.UUID;
 
 @Mixin(BlockEntity.class)
 @RemapPrefixForJS("pjs$")
@@ -73,5 +78,21 @@ public abstract class BlockEntityMixin {
     @Unique
     public float pjs$getTickingSpeed() {
         return pjs$self().getData(Attachments.TICK_SPEED).getTickSpeed();
+    }
+
+    @Unique
+    @Nullable
+    public UUID pjs$getOwnerUUID() {
+        return pjs$self().getExistingData(Attachments.OWNER).orElse(null);
+    }
+
+    @Unique
+    @Nullable
+    public Player pjs$getOwner() {
+        UUID ownerUuid = pjs$getOwnerUUID();
+        if (ownerUuid == null) return null;
+        Level level = pjs$self().getLevel();
+        if (level == null) return null;
+        return level.getPlayerByUUID(ownerUuid);
     }
 }
