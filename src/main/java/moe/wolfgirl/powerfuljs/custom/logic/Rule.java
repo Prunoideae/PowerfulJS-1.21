@@ -94,17 +94,8 @@ public abstract class Rule {
         ticks--;
         if (ticks == 0) return;
 
-        switch (blockEntity) {
-            case ProgressProvider provider:
-                provider.pjs$addProgress(ticks);
-                break;
-            case MultiProgressProvider provider:
-                provider.pjs$addProgress(ticks);
-                break;
-            default:
-                for (int i = 0; i < ticks; i++) {
-                    original.tick(level, pos, state, blockEntity);
-                }
+        for (int i = 0; i < ticks; i++) {
+            original.tick(level, pos, state, blockEntity);
         }
     }
 

@@ -9,19 +9,26 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MachineAddProgress extends Effect {
-    private final int progress;
+    private final float progress;
+    private float accumulatedProgress = 0;
+    private BlockEntity cache;
 
-    public MachineAddProgress(int progress) {
+    public MachineAddProgress(float progress) {
         this.progress = progress;
     }
 
     @Override
     public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (!condition) return;
+        if (cache == null) cache = blockEntity;
+        if (cache != blockEntity) throw new RuntimeException("The same block entity shall not be used by multiple block entities! Make a new instance instead.");
+        accumulatedProgress += progress;
+        int advancedTicks = (int) Math.floor(accumulatedProgress);
+        accumulatedProgress -= advancedTicks;
         if (blockEntity instanceof ProgressProvider provider) {
-            provider.pjs$addProgress(progress);
+            provider.pjs$addProgress(advancedTicks);
         } else if (blockEntity instanceof MultiProgressProvider multiProvider) {
-            multiProvider.pjs$addProgress(progress);
+            multiProvider.pjs$addProgress(advancedTicks);
         }
     }
 }

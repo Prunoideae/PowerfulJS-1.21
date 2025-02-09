@@ -53,7 +53,7 @@ public class SkilletMixin implements RecipeProvider, ProgressProvider {
 
     @Override
     public boolean pjs$running() {
-        return pjs$getRunningRecipe() != null;
+        return pjs$getRunningRecipe() != null && pjs$self().isHeated();
     }
 
     @Override

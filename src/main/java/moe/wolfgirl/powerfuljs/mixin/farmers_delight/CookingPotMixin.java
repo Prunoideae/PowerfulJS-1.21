@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.mixin.farmers_delight;
 
+import dev.latvian.mods.kubejs.util.Cast;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import vectorwing.farmersdelight.common.block.entity.CookingPotBlockEntity;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 
@@ -31,6 +33,11 @@ public abstract class CookingPotMixin implements RecipeProvider, ProgressProvide
     @Final
     private ItemStackHandler inventory;
 
+    @Unique
+    private CookingPotBlockEntity pjs$self() {
+        return Cast.to(this);
+    }
+
     @Override
     public int pjs$getProgress() {
         return cookTime;
@@ -48,7 +55,7 @@ public abstract class CookingPotMixin implements RecipeProvider, ProgressProvide
 
     @Override
     public boolean pjs$running() {
-        return pjs$getRunningRecipe() != null;
+        return pjs$getRunningRecipe() != null && pjs$self().isHeated();
     }
 
     @Override

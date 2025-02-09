@@ -220,7 +220,7 @@ public class LogicRegistry {
             return new ToggleEnable();
         }
 
-        @Info("Changes the machine working speed. An id is needed to prevent operation conflicts. For non-progress BEs, tick speed is modified instead (for performance sake), so they work at max 1 operation per tick.")
+        @Info("Changes the machine ticking speed. An id is needed to prevent operation conflicts. `addProgress` is better for many BEs for the performance sake.")
         public Effect modifySpeed(SpeedModifiers.SpeedModifier tickSpeed) {
             return new TickRate(tickSpeed);
         }
@@ -273,7 +273,7 @@ public class LogicRegistry {
             return new MachineAddFuel(fuelTicks);
         }
 
-        public Effect addProgress(int progressTicks) {
+        public Effect addProgress(float progressTicks) {
             return new MachineAddProgress(progressTicks);
         }
 

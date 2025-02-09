@@ -37,25 +37,15 @@ public class FurnaceMixin implements RecipeProvider, ProgressProvider, FuelProvi
     private RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
 
     @Unique
-    private IdentityCache<ItemStack, ResourceLocation> pjs$cache;
-
-    @Unique
     public AbstractFurnaceBlockEntity pjs$getSelf() {
         return (AbstractFurnaceBlockEntity) (Object) this;
     }
 
     @Override
     public ResourceLocation pjs$getRunningRecipe() {
-        if (pjs$cache == null) {
-            pjs$cache = new IdentityCache<>(
-                    () -> items.getFirst(),
-                    () -> quickCheck.getRecipeFor(new SingleRecipeInput(items.getFirst()), pjs$getSelf().getLevel())
-                            .map(RecipeHolder::id)
-                            .orElse(null)
-            );
-        }
-
-        return pjs$cache.get();
+        return quickCheck.getRecipeFor(new SingleRecipeInput(items.getFirst()), pjs$getSelf().getLevel())
+                .map(RecipeHolder::id)
+                .orElse(null);
     }
 
     @Override
@@ -75,7 +65,7 @@ public class FurnaceMixin implements RecipeProvider, ProgressProvider, FuelProvi
 
     @Override
     public boolean pjs$running() {
-        return pjs$getRunningRecipe() != null;
+        return litTime > 0 && pjs$getRunningRecipe() != null;
     }
 
     @Override
