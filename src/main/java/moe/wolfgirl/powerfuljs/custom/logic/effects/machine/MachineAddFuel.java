@@ -17,7 +17,7 @@ public class MachineAddFuel extends Effect {
     @Override
     public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (condition && blockEntity instanceof FuelProvider provider) {
-            provider.pjs$setFuelTime(provider.pjs$getFuelTime() + ticks);
+            provider.pjs$setFuel(provider.pjs$getFuel() + ticks);
         }
     }
 }

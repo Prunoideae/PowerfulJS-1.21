@@ -19,19 +19,9 @@ public class MachineAddProgress extends Effect {
     public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (!condition) return;
         if (blockEntity instanceof ProgressProvider provider) {
-            int updatedProgress = Math.max(0, provider.pjs$getProgress() + progress);
-            provider.pjs$setProgress(Math.min(updatedProgress, provider.pjs$getMaxProgress() - 1));
+            provider.pjs$addProgress(progress);
         } else if (blockEntity instanceof MultiProgressProvider multiProvider) {
-            int[] progress = multiProvider.pjs$getProgress();
-            int[] maxProgress = multiProvider.pjs$getMaxProgress();
-            int[] newProgress = new int[multiProvider.pjs$getSlots()];
-
-            for (int i = 0; i < maxProgress.length; i++) {
-                if (maxProgress[i] == 0) continue;
-                int updatedProgress = Math.max(0, progress[i] + this.progress);
-                newProgress[i] = Math.min(updatedProgress, maxProgress[i] - 1);
-            }
-            multiProvider.pjs$setProgress(newProgress);
+            multiProvider.pjs$addProgress(progress);
         }
     }
 }

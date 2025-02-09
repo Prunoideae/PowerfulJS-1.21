@@ -2,7 +2,7 @@ package moe.wolfgirl.powerfuljs.custom;
 
 import moe.wolfgirl.powerfuljs.serde.ChunkDataStorage;
 import moe.wolfgirl.powerfuljs.serde.ItemContent;
-import moe.wolfgirl.powerfuljs.serde.TickModifiers;
+import moe.wolfgirl.powerfuljs.serde.SpeedModifiers;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import moe.wolfgirl.powerfuljs.utils.UUIDUtils;
 import net.minecraft.util.ExtraCodecs;
@@ -35,8 +35,8 @@ public class Attachments {
             .serialize(Unit.CODEC)
             .build();
 
-    public static final AttachmentType<TickModifiers> TICK_SPEED = AttachmentType.builder(() -> TickModifiers.EMPTY)
-            .serialize(TickModifiers.CODEC)
+    public static final AttachmentType<SpeedModifiers> TICK_SPEED = AttachmentType.builder(() -> SpeedModifiers.EMPTY)
+            .serialize(SpeedModifiers.CODEC)
             .build();
 
     public static final AttachmentType<UUID> OWNER = AttachmentType.builder(UUID::randomUUID)

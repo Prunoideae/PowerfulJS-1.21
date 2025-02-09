@@ -2,11 +2,14 @@ package moe.wolfgirl.powerfuljs.custom.logic;
 
 import com.google.common.collect.ImmutableList;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.FuelProvider;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.MultiProgressProvider;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AlwaysRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.NotRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.OrRule;
-import moe.wolfgirl.powerfuljs.serde.TickModifiers;
+import moe.wolfgirl.powerfuljs.serde.SpeedModifiers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -85,11 +88,31 @@ public abstract class Rule {
         }
     }
 
+    private static <T extends BlockEntity> void advanceTicks(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, T blockEntity, BlockEntityTicker<T> original, int ticks) {
+        if (ticks == 0) return;
+        if (ticks >= 1) original.tick(level, pos, state, blockEntity);
+        ticks--;
+        if (ticks == 0) return;
+
+        switch (blockEntity) {
+            case ProgressProvider provider:
+                provider.pjs$addProgress(ticks);
+                break;
+            case MultiProgressProvider provider:
+                provider.pjs$addProgress(ticks);
+                break;
+            default:
+                for (int i = 0; i < ticks; i++) {
+                    original.tick(level, pos, state, blockEntity);
+                }
+        }
+    }
+
     private static class PowerfulJSTicker<T extends BlockEntity> implements BlockEntityTicker<T> {
         private final List<Rule> rules;
         private float ticks = 0;
         private float tickSpeed = 1;
-        private TickModifiers modifiers = TickModifiers.EMPTY;
+        private SpeedModifiers modifiers = SpeedModifiers.EMPTY;
         private final BlockEntityTicker<T> original;
 
         private PowerfulJSTicker(List<Rule> rules, BlockEntityTicker<T> original) {
@@ -106,17 +129,16 @@ public abstract class Rule {
             }
 
             if (!blockEntity.hasData(Attachments.DISABLED)) {
-                TickModifiers tickModifiers = blockEntity.getData(Attachments.TICK_SPEED);
-                if (modifiers != tickModifiers) {
-                    modifiers = tickModifiers;
+                SpeedModifiers speedModifiers = blockEntity.getData(Attachments.TICK_SPEED);
+                if (modifiers != speedModifiers) {
+                    modifiers = speedModifiers;
                     tickSpeed = modifiers.getTickSpeed();
                 }
 
                 ticks += tickSpeed;
-                while (ticks >= 1f) {
-                    original.tick(level, pos, state, blockEntity);
-                    ticks--;
-                }
+                int advancedTicks = (int) Math.floor(ticks);
+                advanceTicks(level, pos, state, blockEntity, original, advancedTicks);
+                ticks -= advancedTicks;
             }
         }
     }
@@ -125,7 +147,7 @@ public abstract class Rule {
         private final BlockEntityTicker<T> original;
         private float ticks = 0;
         private float tickSpeed = 1;
-        private TickModifiers modifiers = TickModifiers.EMPTY;
+        private SpeedModifiers modifiers = SpeedModifiers.EMPTY;
 
         public PowerfulJSDefaultTicker(BlockEntityTicker<T> original) {
             this.original = original;
@@ -134,17 +156,16 @@ public abstract class Rule {
         @Override
         public void tick(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, T blockEntity) {
             if (!blockEntity.hasData(Attachments.DISABLED)) {
-                TickModifiers tickModifiers = blockEntity.getData(Attachments.TICK_SPEED);
-                if (modifiers != tickModifiers) {
-                    modifiers = tickModifiers;
+                SpeedModifiers speedModifiers = blockEntity.getData(Attachments.TICK_SPEED);
+                if (modifiers != speedModifiers) {
+                    modifiers = speedModifiers;
                     tickSpeed = modifiers.getTickSpeed();
                 }
 
                 ticks += tickSpeed;
-                while (ticks >= 1f) {
-                    original.tick(level, pos, state, blockEntity);
-                    ticks--;
-                }
+                int advancedTicks = (int) Math.floor(ticks);
+                advanceTicks(level, pos, state, blockEntity, original, advancedTicks);
+                ticks -= advancedTicks;
             }
         }
     }

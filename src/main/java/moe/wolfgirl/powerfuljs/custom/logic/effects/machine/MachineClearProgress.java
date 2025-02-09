@@ -13,10 +13,9 @@ public class MachineClearProgress extends Effect {
     public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (!condition) return;
         if (blockEntity instanceof ProgressProvider provider) {
-            provider.pjs$setProgress(0);
+            provider.pjs$clearProgress();
         } else if (blockEntity instanceof MultiProgressProvider multiProvider) {
-            int[] arr = new int[multiProvider.pjs$getSlots()];
-            multiProvider.pjs$setProgress(arr);
+            multiProvider.pjs$clearProgress();
         }
     }
 }

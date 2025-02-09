@@ -1,9 +1,6 @@
 package moe.wolfgirl.powerfuljs.mixin.minecraft;
 
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.FuelProvider;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.TickCache;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
-public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, FuelProvider {
+public class FurnaceMixin implements RecipeProvider, ProgressProvider, FuelProvider {
 
     @Shadow
     public int cookingProgress;
@@ -40,7 +37,7 @@ public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, 
     private RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
 
     @Unique
-    private TickCache<ResourceLocation> pjs$cache;
+    private IdentityCache<ItemStack, ResourceLocation> pjs$cache;
 
     @Unique
     public AbstractFurnaceBlockEntity pjs$getSelf() {
@@ -50,8 +47,8 @@ public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, 
     @Override
     public ResourceLocation pjs$getRunningRecipe() {
         if (pjs$cache == null) {
-            pjs$cache = new TickCache<>(
-                    pjs$getSelf().getLevel()::getGameTime,
+            pjs$cache = new IdentityCache<>(
+                    () -> items.getFirst(),
                     () -> quickCheck.getRecipeFor(new SingleRecipeInput(items.getFirst()), pjs$getSelf().getLevel())
                             .map(RecipeHolder::id)
                             .orElse(null)
@@ -77,12 +74,17 @@ public abstract class FurnaceMixin implements RecipeProvider, ProgressProvider, 
     }
 
     @Override
-    public int pjs$getFuelTime() {
+    public boolean pjs$running() {
+        return pjs$getRunningRecipe() != null;
+    }
+
+    @Override
+    public int pjs$getFuel() {
         return this.litTime;
     }
 
     @Override
-    public void pjs$setFuelTime(int fuelTime) {
+    public void pjs$setFuel(int fuelTime) {
         fuelTime = Math.max(0, fuelTime);
         if (fuelTime == 1 && this.litTime == 0) fuelTime++; // Prevent tick flickering
 

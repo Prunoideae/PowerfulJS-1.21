@@ -34,7 +34,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.rules.machine.*;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.reflective.ReflectiveAboutToFinish;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.reflective.ReflectiveRunning;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.world.*;
-import moe.wolfgirl.powerfuljs.serde.TickModifiers;
+import moe.wolfgirl.powerfuljs.serde.SpeedModifiers;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -220,8 +220,8 @@ public class LogicRegistry {
             return new ToggleEnable();
         }
 
-        @Info("Changes the tick speed. An id is needed to prevent operation conflicts.")
-        public Effect modifyTick(TickModifiers.TickModifier tickSpeed) {
+        @Info("Changes the machine working speed. An id is needed to prevent operation conflicts. For non-progress BEs, tick speed is modified instead (for performance sake), so they work at max 1 operation per tick.")
+        public Effect modifySpeed(SpeedModifiers.SpeedModifier tickSpeed) {
             return new TickRate(tickSpeed);
         }
 

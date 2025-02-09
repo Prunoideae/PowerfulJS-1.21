@@ -5,7 +5,7 @@ import dev.latvian.mods.rhino.util.RemapForJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import moe.wolfgirl.powerfuljs.GameStates;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
-import moe.wolfgirl.powerfuljs.serde.TickModifiers;
+import moe.wolfgirl.powerfuljs.serde.SpeedModifiers;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -55,23 +55,23 @@ public abstract class BlockEntityMixin {
     }
 
     @Unique
-    public void pjs$addTickModifier(TickModifiers.TickModifier multiplier) {
-        TickModifiers tickModifiers = pjs$self().getData(Attachments.TICK_SPEED);
-        if (!tickModifiers.hasModifier(multiplier.id())) {
-            pjs$self().setData(Attachments.TICK_SPEED, tickModifiers.withModifier(multiplier));
+    public void pjs$addTickModifier(SpeedModifiers.SpeedModifier multiplier) {
+        SpeedModifiers speedModifiers = pjs$self().getData(Attachments.TICK_SPEED);
+        if (!speedModifiers.hasModifier(multiplier.id())) {
+            pjs$self().setData(Attachments.TICK_SPEED, speedModifiers.withModifier(multiplier));
         }
     }
 
     @Unique
     public void pjs$removeTickModifier(String id) {
-        TickModifiers tickModifiers = pjs$self().getData(Attachments.TICK_SPEED);
-        if (tickModifiers.hasModifier(id)) {
-            pjs$self().setData(Attachments.TICK_SPEED, tickModifiers.removeModifier(id));
+        SpeedModifiers speedModifiers = pjs$self().getData(Attachments.TICK_SPEED);
+        if (speedModifiers.hasModifier(id)) {
+            pjs$self().setData(Attachments.TICK_SPEED, speedModifiers.removeModifier(id));
         }
     }
 
     @Unique
-    public TickModifiers pjs$getTickModifiers() {
+    public SpeedModifiers pjs$getTickModifiers() {
         return pjs$self().getData(Attachments.TICK_SPEED);
     }
 

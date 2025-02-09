@@ -21,6 +21,7 @@
         "mekanism.MachineRecipeAccessor",
         "minecraft.CampfireMixin",
         "minecraft.FurnaceMixin",
+        "minecraft.SpawnerMixin",
         "stages.TagWrapperMixin"
     ],
     "client": [

@@ -12,11 +12,9 @@ public class MachineRunning extends Rule {
     @Override
     public boolean evaluate(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (blockEntity instanceof ProgressProvider provider) {
-            return provider.pjs$getProgress() > 0;
+            return provider.pjs$running();
         } else if (blockEntity instanceof MultiProgressProvider multiProvider) {
-            for (int i : multiProvider.pjs$getProgress()) {
-                if (i > 0) return true;
-            }
+            return multiProvider.pjs$running();
         }
         return false;
     }

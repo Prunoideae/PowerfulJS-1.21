@@ -7,25 +7,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public record TickModifiers(Map<String, TickModifier> modifiers) {
-    public static final TickModifiers EMPTY = new TickModifiers(Map.of());
-    public static final Codec<TickModifiers> CODEC = TickModifier.CODEC
+public record SpeedModifiers(Map<String, SpeedModifier> modifiers) {
+    public static final SpeedModifiers EMPTY = new SpeedModifiers(Map.of());
+    public static final Codec<SpeedModifiers> CODEC = SpeedModifier.CODEC
             .listOf()
             .xmap(
-                    l -> new TickModifiers(l.stream().collect(Collectors.toUnmodifiableMap(
+                    l -> new SpeedModifiers(l.stream().collect(Collectors.toUnmodifiableMap(
                             modifier -> modifier.id,
                             modifier -> modifier
                     ))),
                     m -> m.modifiers.values().stream().toList()
             );
 
-    public record TickModifier(String id, float amount, Operation operation) {
-        private static final Codec<TickModifier> CODEC = RecordCodecBuilder.create(
+    public record SpeedModifier(String id, float amount, Operation operation) {
+        private static final Codec<SpeedModifier> CODEC = RecordCodecBuilder.create(
                 modifier -> modifier.group(
-                        Codec.STRING.fieldOf("id").forGetter(TickModifier::id),
-                        Codec.FLOAT.fieldOf("amount").forGetter(TickModifier::amount),
-                        Operation.CODEC.fieldOf("operation").forGetter(TickModifier::operation)
-                ).apply(modifier, TickModifier::new)
+                        Codec.STRING.fieldOf("id").forGetter(SpeedModifier::id),
+                        Codec.FLOAT.fieldOf("amount").forGetter(SpeedModifier::amount),
+                        Operation.CODEC.fieldOf("operation").forGetter(SpeedModifier::operation)
+                ).apply(modifier, SpeedModifier::new)
         );
     }
 
@@ -44,7 +44,7 @@ public record TickModifiers(Map<String, TickModifier> modifiers) {
         float addTotal = 0;
         float multiplyTotal = 1;
 
-        for (TickModifier modifier : modifiers.values()) {
+        for (SpeedModifier modifier : modifiers.values()) {
             switch (modifier.operation) {
                 case ADD_BASE -> addBase += modifier.amount;
                 case MULTIPLY_BASE -> multiplyBase += modifier.amount;
@@ -56,16 +56,16 @@ public record TickModifiers(Map<String, TickModifier> modifiers) {
         return Math.max(0, ((1 + addBase) * multiplyBase) * multiplyTotal + addTotal);
     }
 
-    public TickModifiers withModifier(TickModifier modifier) {
-        Map<String, TickModifier> newMap = new HashMap<>(modifiers);
+    public SpeedModifiers withModifier(SpeedModifier modifier) {
+        Map<String, SpeedModifier> newMap = new HashMap<>(modifiers);
         newMap.put(modifier.id, modifier);
-        return new TickModifiers(Map.copyOf(newMap));
+        return new SpeedModifiers(Map.copyOf(newMap));
     }
 
-    public TickModifiers removeModifier(String id) {
-        Map<String, TickModifier> newMap = new HashMap<>(modifiers);
+    public SpeedModifiers removeModifier(String id) {
+        Map<String, SpeedModifier> newMap = new HashMap<>(modifiers);
         newMap.remove(id);
-        return new TickModifiers(Map.copyOf(newMap));
+        return new SpeedModifiers(Map.copyOf(newMap));
     }
 
     public boolean hasModifier(String id) {

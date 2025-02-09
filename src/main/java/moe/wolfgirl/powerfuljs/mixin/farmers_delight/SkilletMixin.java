@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 import vectorwing.farmersdelight.common.block.entity.SkilletBlockEntity;
 
 @Mixin(SkilletBlockEntity.class)
-public abstract class SkilletMixin implements RecipeProvider, ProgressProvider {
+public class SkilletMixin implements RecipeProvider, ProgressProvider {
 
     @Shadow
     private int cookingTime;
@@ -49,6 +49,11 @@ public abstract class SkilletMixin implements RecipeProvider, ProgressProvider {
     @Override
     public void pjs$setProgress(int progress) {
         this.cookingTime = progress;
+    }
+
+    @Override
+    public boolean pjs$running() {
+        return pjs$getRunningRecipe() != null;
     }
 
     @Override

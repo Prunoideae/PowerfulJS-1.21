@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class PowerfulModifyBLockEntityEvent implements KubeEvent {
+public class PowerfulModifyBlockEntityEvent implements KubeEvent {
 
-    public PowerfulModifyBLockEntityEvent() {
+    public PowerfulModifyBlockEntityEvent() {
         GameStates.INTERCEPTED_BLOCK_ENTITIES.clear();
         GameStates.FORCED_TICKED_BLOCK_ENTITIES.clear();
         GameStates.OWNED_BLOCK_ENTITIES.clear();

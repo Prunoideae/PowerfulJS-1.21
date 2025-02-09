@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(StoveBlockEntity.class)
-public abstract class StoveMixin implements MultiRecipeProvider, MultiProgressProvider {
+public class StoveMixin implements MultiRecipeProvider, MultiProgressProvider {
     @Shadow
     @Final
     private static int INVENTORY_SLOT_COUNT;
@@ -66,6 +66,14 @@ public abstract class StoveMixin implements MultiRecipeProvider, MultiProgressPr
     @Override
     public void pjs$setProgress(int[] progress) {
         System.arraycopy(progress, 0, cookingTimes, 0, progress.length);
+    }
+
+    @Override
+    public boolean pjs$running() {
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            if (!inventory.getStackInSlot(i).isEmpty()) return true;
+        }
+        return false;
     }
 
     @Override

@@ -13,7 +13,7 @@ import moe.wolfgirl.powerfuljs.custom.CapabilityWrapper;
 import moe.wolfgirl.powerfuljs.custom.attachment.ContentTypes;
 import moe.wolfgirl.powerfuljs.custom.attachment.PrimitiveTypes;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
-import moe.wolfgirl.powerfuljs.events.PowerfulModifyBLockEntityEvent;
+import moe.wolfgirl.powerfuljs.events.PowerfulModifyBlockEntityEvent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
@@ -30,7 +30,6 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
     @Override
     public void registerBindings(BindingRegistry bindings) {
         bindings.add("Capabilities", CapabilityWrapper.class);
-        bindings.add("PowerfulJS", PowerfulJS.class);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
     @Override
     public void afterScriptsLoaded(ScriptManager manager) {
         if (manager.scriptType == ScriptType.SERVER) {
-            PowerfulEvents.MODIFY_BLOCK_ENTITY.post(new PowerfulModifyBLockEntityEvent());
+            PowerfulEvents.MODIFY_BLOCK_ENTITY.post(new PowerfulModifyBlockEntityEvent());
         }
     }
 

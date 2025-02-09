@@ -1,5 +1,6 @@
 package moe.wolfgirl.powerfuljs.mixin.minecraft;
 
+import dev.latvian.mods.kubejs.util.Cast;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.IdentityCache;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.MultiProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.MultiRecipeProvider;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(CampfireBlockEntity.class)
-public abstract class CampfireMixin implements MultiRecipeProvider, MultiProgressProvider {
+public class CampfireMixin implements MultiRecipeProvider, MultiProgressProvider {
 
     @Shadow
     @Final
@@ -44,7 +45,7 @@ public abstract class CampfireMixin implements MultiRecipeProvider, MultiProgres
 
     @Unique
     public CampfireBlockEntity pjs$self() {
-        return (CampfireBlockEntity) (Object) this;
+        return Cast.to(this);
     }
 
     @Override
@@ -65,6 +66,11 @@ public abstract class CampfireMixin implements MultiRecipeProvider, MultiProgres
     @Override
     public void pjs$setProgress(int[] progress) {
         System.arraycopy(progress, 0, cookingProgress, 0, progress.length);
+    }
+
+    @Override
+    public boolean pjs$running() {
+        return !items.stream().allMatch(ItemStack::isEmpty);
     }
 
     @Override

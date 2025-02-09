@@ -4,7 +4,11 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 
 @HideFromJS
 public interface FuelProvider {
-    int pjs$getFuelTime();
+    int pjs$getFuel();
 
-    void pjs$setFuelTime(int fuelTime);
+    void pjs$setFuel(int fuelTime);
+
+    default int pjs$getFuelCost() {
+        return 1;
+    }
 }

@@ -47,6 +47,11 @@ public abstract class CookingPotMixin implements RecipeProvider, ProgressProvide
     }
 
     @Override
+    public boolean pjs$running() {
+        return pjs$getRunningRecipe() != null;
+    }
+
+    @Override
     public @Nullable ResourceLocation pjs$getRunningRecipe() {
         return getMatchingRecipe(new RecipeWrapper(inventory))
                 .map(RecipeHolder::id)
