@@ -304,6 +304,7 @@ public class LogicRegistry {
             return new EffectJS(callback);
         }
 
+        @Info("Test all the rules contained and execute effects if true. No shortcuts like `or` or `and`.")
         public Effect composite(Rule... rules) {
             return new CompositeEffect(List.of(rules));
         }

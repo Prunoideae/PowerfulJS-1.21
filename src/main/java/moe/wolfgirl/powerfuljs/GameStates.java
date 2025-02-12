@@ -20,7 +20,7 @@ public class GameStates {
 
     public static Set<Block> REGISTERED_BLOCKS = new HashSet<>();
     public static Multimap<BlockEntityType<?>, Rule.RuleSet> INTERCEPTED_BLOCK_ENTITIES = ArrayListMultimap.create();
-    public static Map<BlockEntityType<?>, Boolean> FORCED_TICKED_BLOCK_ENTITIES = new HashMap<>();
+    public static Map<BlockEntityType<?>, Float> TICK_MODIFIED_BLOCK_ENTITIES = new HashMap<>();
     public static Set<BlockEntityType<?>> OWNED_BLOCK_ENTITIES = new HashSet<>();
     public static Difficulty GAME_DIFFICULTY = null;
 }

@@ -25,10 +25,11 @@ public abstract class BlockTickingInterceptor {
 
     @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/chunk/LevelChunk$BoundTickingBlockEntity;ticker:Lnet/minecraft/world/level/block/entity/BlockEntityTicker;", opcode = Opcodes.PUTFIELD))
     private <T extends BlockEntity> void wrapTicker(LevelChunk.BoundTickingBlockEntity<T> instance, BlockEntityTicker<T> value) {
+        float tickSpeed = GameStates.TICK_MODIFIED_BLOCK_ENTITIES.getOrDefault(blockEntity.getType(), 1f);
         if (GameStates.INTERCEPTED_BLOCK_ENTITIES.containsKey(blockEntity.getType())) {
-            instance.ticker = Rule.RuleSet.createTicker(GameStates.INTERCEPTED_BLOCK_ENTITIES.get(blockEntity.getType()), value);
+            instance.ticker = Rule.RuleSet.createTicker(GameStates.INTERCEPTED_BLOCK_ENTITIES.get(blockEntity.getType()), value, tickSpeed);
         } else {
-            instance.ticker = new Rule.PowerfulJSDefaultTicker<>(value);
+            instance.ticker = new Rule.PowerfulJSDefaultTicker<>(value, tickSpeed);
         }
     }
 }

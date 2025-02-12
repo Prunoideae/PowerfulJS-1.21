@@ -17,8 +17,8 @@ public abstract class BlockTickerInterceptor {
 
     @Inject(method = "getTicker", cancellable = true, at = @At("RETURN"))
     public <T extends BlockEntity> void forceTicker(Level level, BlockEntityType<T> blockEntityType, CallbackInfoReturnable<BlockEntityTicker<T>> cir) {
-        if (level instanceof ServerLevel && GameStates.FORCED_TICKED_BLOCK_ENTITIES.containsKey(blockEntityType)) {
-            if (GameStates.FORCED_TICKED_BLOCK_ENTITIES.get(blockEntityType)) {
+        if (level instanceof ServerLevel && GameStates.TICK_MODIFIED_BLOCK_ENTITIES.containsKey(blockEntityType)) {
+            if (GameStates.TICK_MODIFIED_BLOCK_ENTITIES.get(blockEntityType) > 0) {
                 if (cir.getReturnValue() == null) {
                     // Create an empty ticker here for non-tick-able entities
                     // otherwise just return the original logic

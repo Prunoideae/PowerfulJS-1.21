@@ -14,7 +14,7 @@ public class PowerfulModifyBlockEntityEvent implements KubeEvent {
 
     public PowerfulModifyBlockEntityEvent() {
         GameStates.INTERCEPTED_BLOCK_ENTITIES.clear();
-        GameStates.FORCED_TICKED_BLOCK_ENTITIES.clear();
+        GameStates.TICK_MODIFIED_BLOCK_ENTITIES.clear();
         GameStates.OWNED_BLOCK_ENTITIES.clear();
     }
 
@@ -32,12 +32,12 @@ public class PowerfulModifyBlockEntityEvent implements KubeEvent {
         GameStates.INTERCEPTED_BLOCK_ENTITIES.put(blockEntityType, new Rule.RuleSet(rules));
     }
 
-    @Info("Force a block entity to be ticked or not, returning false will disable its original ticking logic.")
-    public void forceTicking(BlockEntityType<?> blockEntityType, boolean ticked) {
-        if (GameStates.FORCED_TICKED_BLOCK_ENTITIES.containsKey(blockEntityType)) {
+    @Info("Modify the base tick speed of the block entity, this will affect tick speed modifiers in a multiplicative way. Speed <= 0 will disable the ticking logic, > 0 will make even non-tick-able BEs tick.")
+    public void modifyTickSpeed(BlockEntityType<?> blockEntityType, float tickSpeed) {
+        if (GameStates.TICK_MODIFIED_BLOCK_ENTITIES.containsKey(blockEntityType)) {
             throw new RuntimeException("Ticking status of %s is already modified!".formatted(blockEntityType));
         }
-        GameStates.FORCED_TICKED_BLOCK_ENTITIES.put(blockEntityType, ticked);
+        GameStates.TICK_MODIFIED_BLOCK_ENTITIES.put(blockEntityType, tickSpeed);
     }
 
     @Info("Makes a machine to record its owner when placed.")

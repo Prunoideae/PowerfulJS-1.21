@@ -2,9 +2,6 @@ package moe.wolfgirl.powerfuljs.custom.logic;
 
 import com.google.common.collect.ImmutableList;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.FuelProvider;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.MultiProgressProvider;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AlwaysRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.AndRule;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.logic.NotRule;
@@ -79,12 +76,12 @@ public abstract class Rule {
     }
 
     public record RuleSet(Supplier<List<Rule>> rules) {
-        public static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Collection<RuleSet> ruleSets, BlockEntityTicker<T> original) {
+        public static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Collection<RuleSet> ruleSets, BlockEntityTicker<T> original, float baseTickSpeed) {
             List<Rule> allRules = new ArrayList<>();
             for (RuleSet ruleSet : ruleSets) {
                 allRules.addAll(ruleSet.rules.get());
             }
-            return new PowerfulJSTicker<>(List.copyOf(allRules), original);
+            return new PowerfulJSTicker<>(List.copyOf(allRules), baseTickSpeed, original);
         }
     }
 
@@ -102,12 +99,14 @@ public abstract class Rule {
     private static class PowerfulJSTicker<T extends BlockEntity> implements BlockEntityTicker<T> {
         private final List<Rule> rules;
         private float ticks = 0;
-        private float tickSpeed = 1;
+        private float cachedModifier = 1;
+        private final float baseTickSpeed;
         private SpeedModifiers modifiers = SpeedModifiers.EMPTY;
         private final BlockEntityTicker<T> original;
 
-        private PowerfulJSTicker(List<Rule> rules, BlockEntityTicker<T> original) {
+        private PowerfulJSTicker(List<Rule> rules, float baseTickSpeed, BlockEntityTicker<T> original) {
             this.rules = rules;
+            this.baseTickSpeed = baseTickSpeed;
             this.original = original;
         }
 
@@ -123,10 +122,10 @@ public abstract class Rule {
                 SpeedModifiers speedModifiers = blockEntity.getData(Attachments.TICK_SPEED);
                 if (modifiers != speedModifiers) {
                     modifiers = speedModifiers;
-                    tickSpeed = modifiers.getTickSpeed();
+                    cachedModifier = modifiers.getTickSpeed();
                 }
 
-                ticks += tickSpeed;
+                ticks += cachedModifier * baseTickSpeed;
                 int advancedTicks = (int) Math.floor(ticks);
                 advanceTicks(level, pos, state, blockEntity, original, advancedTicks);
                 ticks -= advancedTicks;
@@ -137,11 +136,13 @@ public abstract class Rule {
     public static class PowerfulJSDefaultTicker<T extends BlockEntity> implements BlockEntityTicker<T> {
         private final BlockEntityTicker<T> original;
         private float ticks = 0;
-        private float tickSpeed = 1;
+        private float cachedModifier = 1;
+        private final float baseTickSpeed;
         private SpeedModifiers modifiers = SpeedModifiers.EMPTY;
 
-        public PowerfulJSDefaultTicker(BlockEntityTicker<T> original) {
+        public PowerfulJSDefaultTicker(BlockEntityTicker<T> original, float baseTickSpeed) {
             this.original = original;
+            this.baseTickSpeed = baseTickSpeed;
         }
 
         @Override
@@ -150,10 +151,10 @@ public abstract class Rule {
                 SpeedModifiers speedModifiers = blockEntity.getData(Attachments.TICK_SPEED);
                 if (modifiers != speedModifiers) {
                     modifiers = speedModifiers;
-                    tickSpeed = modifiers.getTickSpeed();
+                    cachedModifier = modifiers.getTickSpeed();
                 }
 
-                ticks += tickSpeed;
+                ticks += cachedModifier * baseTickSpeed;
                 int advancedTicks = (int) Math.floor(ticks);
                 advanceTicks(level, pos, state, blockEntity, original, advancedTicks);
                 ticks -= advancedTicks;
