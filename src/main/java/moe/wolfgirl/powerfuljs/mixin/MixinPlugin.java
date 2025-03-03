@@ -26,6 +26,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains("farmers_delight") && !ModUtils.isModPresent("farmerdelight", "vectorwing.farmersdelight.FarmersDelight")) {
             return false;
         }
+        if (mixinClassName.contains("create") && !ModUtils.isModPresent("create", "com.simibubi.create.Create")) {
+            return false;
+        }
         return true;
     }
 

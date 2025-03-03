@@ -52,13 +52,22 @@ neoForge {
 repositories {
     mavenCentral()
     mavenLocal()
-
+    maven { url = "https://maven.createmod.net" } // Ponder, Flywheel
     maven {
         url "https://maven.neoforged.net/releases"
     }
 
     maven {
         url "https://maven.architectury.dev/"
+    }
+
+    maven {
+        url "https://maven.tterrag.com/"
+        content {
+            includeGroup "com.simibubi.create"
+            includeGroup "com.jozufozu.flywheel"
+            includeGroup "com.tterrag.registrate"
+        }
     }
 
     maven {
@@ -114,11 +123,13 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     api("dev.latvian.mods:rhino:$rhino_version") { transitive(false) }
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
-    compileOnly("dev.architectury:architectury-neoforge:$architectury_version")
+    interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 
+    implementation("net.createmod.ponder:Ponder-NeoForge-${specific_minecraft_version}:${ponder_version}")
     // Supported mods
     implementation("curse.maven:probejs-585406:5651850")
-    implementation "mekanism:Mekanism:1.21.1-${mekanism_version}"
+    implementation ("curse.maven:create-328085:6247669")
+    implementation "mekanism:Mekanism:${specific_minecraft_version}-${mekanism_version}"
     implementation "curse.maven:farmers-delight-398521:5772720"
 }
 

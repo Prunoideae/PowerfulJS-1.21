@@ -4,6 +4,7 @@ import moe.wolfgirl.powerfuljs.custom.Attachments;
 import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.DataComponents;
 import moe.wolfgirl.powerfuljs.custom.Registries;
+import moe.wolfgirl.powerfuljs.custom.mods.create.CreateAttachments;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.MekAttachments;
 import moe.wolfgirl.powerfuljs.custom.mods.mekanism.MekDataComponents;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
@@ -30,6 +31,10 @@ public class ModEvents {
         ModUtils.whenLoaded("mekanism", () -> {
             event.register(attachment, MekAttachments::initAttachments);
             event.register(dataComponent, MekDataComponents::initComponents);
+        });
+
+        ModUtils.whenLoaded("create", () -> {
+            event.register(attachment, CreateAttachments::initAttachments);
         });
     }
 
