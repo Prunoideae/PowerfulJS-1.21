@@ -52,7 +52,15 @@ neoForge {
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url = "https://maven.createmod.net" } // Ponder, Flywheel
+    maven {
+        url "https://maven.createmod.net"
+        content {
+            includeGroup "com.simibubi.create"
+            includeGroup "dev.engine-room.flywheel"
+            includeGroup "com.tterrag.registrate"
+            includeGroup "net.createmod.ponder"
+        }
+    } // Ponder, Flywheel
     maven {
         url "https://maven.neoforged.net/releases"
     }
@@ -64,8 +72,6 @@ repositories {
     maven {
         url "https://maven.tterrag.com/"
         content {
-            includeGroup "com.simibubi.create"
-            includeGroup "com.jozufozu.flywheel"
             includeGroup "com.tterrag.registrate"
         }
     }
@@ -125,12 +131,13 @@ dependencies {
     api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
     interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 
-    implementation("net.createmod.ponder:Ponder-NeoForge-${specific_minecraft_version}:${ponder_version}")
     // Supported mods
     implementation("curse.maven:probejs-585406:5651850")
-    implementation ("curse.maven:create-328085:6247669")
     implementation "mekanism:Mekanism:${specific_minecraft_version}-${mekanism_version}"
     implementation "curse.maven:farmers-delight-398521:5772720"
+    implementation("com.simibubi.create:create-${specific_minecraft_version}:${create_version}:slim") { transitive = false }
+    api("net.createmod.ponder:Ponder-NeoForge-${specific_minecraft_version}:${ponder_version}") { transitive = false }
+    api("dev.engine-room.flywheel:flywheel-neoforge-${specific_minecraft_version}:${flywheel_version}") { transitive = false }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -150,7 +157,7 @@ tasks.withType(ProcessResources).configureEach {
             mod_version            : mod_version,
             mod_authors            : mod_authors,
             mod_description        : mod_description,
-            kubejs_version  : kubejs_version,
+            kubejs_version         : kubejs_version,
     ]
     inputs.properties replaceProperties
 

@@ -19,8 +19,7 @@ public class FillChemicalEffect extends ChemicalEffect {
     }
 
     @Override
-    protected void runEffect(BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache) {
-        IChemicalHandler chemicalHandler = cache.getCapability();
+    protected void runEffect(IChemicalHandler chemicalHandler) {
         if (chemicalHandler == null) return;
 
         if (!forced || !(chemicalHandler instanceof ChemicalHandler handler)) {

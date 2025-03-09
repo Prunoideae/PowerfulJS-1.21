@@ -2,6 +2,7 @@ package moe.wolfgirl.powerfuljs.custom;
 
 import moe.wolfgirl.powerfuljs.custom.fluid.ConstantFluid;
 import moe.wolfgirl.powerfuljs.custom.fluid.storage.FixedFluidTank;
+import moe.wolfgirl.powerfuljs.custom.fluid.storage.FixedProcessingFluidTank;
 import moe.wolfgirl.powerfuljs.custom.fluid_item.ConstantItemFluid;
 import moe.wolfgirl.powerfuljs.custom.fluid_item.FixedItemFluidTank;
 import moe.wolfgirl.powerfuljs.custom.forge_energy.ConstantEnergy;
@@ -34,6 +35,9 @@ public class Registries {
         BlockCapabilityRegistry.registerBE(FixedFluidTank.BLOCK_ENTITY);
         ItemCapabilityRegistry.register(FixedItemFluidTank.ITEM);
         EntityCapabilityRegistry.register(FixedFluidTank.ENTITY);
+
+        BlockCapabilityRegistry.registerBE(FixedProcessingFluidTank.BLOCK_ENTITY);
+        EntityCapabilityRegistry.register(FixedProcessingFluidTank.ENTITY);
 
         BlockCapabilityRegistry.register(ConstantItem.BLOCK);
         BlockCapabilityRegistry.registerBE(ConstantItem.BLOCK_ENTITY);

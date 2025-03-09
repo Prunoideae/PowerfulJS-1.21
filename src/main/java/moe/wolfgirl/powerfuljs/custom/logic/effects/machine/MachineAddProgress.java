@@ -5,6 +5,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.behavior.MultiProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -18,7 +19,7 @@ public class MachineAddProgress extends Effect {
     }
 
     @Override
-    public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public void apply(boolean condition, Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (!condition) return;
         if (cache == null) cache = blockEntity;
         if (cache != blockEntity) throw new RuntimeException("The same block entity shall not be used by multiple block entities! Make a new instance instead.");

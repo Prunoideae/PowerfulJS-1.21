@@ -17,8 +17,7 @@ public class AddHeat extends CapabilityEffect<IHeatHandler, @Nullable Direction>
     }
 
     @Override
-    protected void runEffect(BlockCapabilityCache<IHeatHandler, @Nullable Direction> cache) {
-        IHeatHandler handler = cache.getCapability();
+    protected void runEffect(IHeatHandler handler) {
         if (handler == null) return;
         handler.handleHeat(heatAdded);
     }

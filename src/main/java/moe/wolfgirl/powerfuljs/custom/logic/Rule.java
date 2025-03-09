@@ -65,9 +65,9 @@ public abstract class Rule {
         return new OrRule(ImmutableList.copyOf(flattened));
     }
 
-    public abstract boolean evaluate(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity);
+    public abstract boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity);
 
-    public final boolean run(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public final boolean run(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         boolean condition = evaluate(level, pos, state, blockEntity);
         for (Effect effect : effects) {
             effect.apply(condition, level, pos, state, blockEntity);
@@ -87,10 +87,6 @@ public abstract class Rule {
 
     private static <T extends BlockEntity> void advanceTicks(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, T blockEntity, BlockEntityTicker<T> original, int ticks) {
         if (ticks == 0) return;
-        if (ticks >= 1) original.tick(level, pos, state, blockEntity);
-        ticks--;
-        if (ticks == 0) return;
-
         for (int i = 0; i < ticks; i++) {
             original.tick(level, pos, state, blockEntity);
         }
@@ -112,10 +108,8 @@ public abstract class Rule {
 
         @Override
         public void tick(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull T blockEntity) {
-            if (level instanceof ServerLevel serverLevel) {
-                for (Rule rule : rules) {
-                    rule.run(serverLevel, pos, state, blockEntity);
-                }
+            for (Rule rule : rules) {
+                rule.run(level, pos, state, blockEntity);
             }
 
             if (!blockEntity.hasData(Attachments.DISABLED)) {

@@ -3,6 +3,7 @@ package moe.wolfgirl.powerfuljs.custom.logic.rules.world;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,7 +16,7 @@ public class LightRule extends Rule {
     }
 
     @Override
-    public boolean evaluate(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         return level.getBrightness(LightLayer.BLOCK, pos) > brighterThan;
     }
 }

@@ -9,10 +9,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(KineticBlockEntity.class)
 public class KineticBlockMixin implements KineticModifier {
-
     @Inject(method = "calculateAddedStressCapacity", at = @At("RETURN"), cancellable = true)
     public void applyNewStressCapacity(CallbackInfoReturnable<Float> cir) {
-        float newCapacity = cir.getReturnValue() * pjs$getCapacityModifier();
+        float newCapacity = cir.getReturnValue() * pjs$getStressCapacityModifier();
         cir.setReturnValue(newCapacity);
+    }
+
+    @Inject(method = "getSpeed", at = @At("RETURN"), cancellable = true)
+    public void applyNewSpeed(CallbackInfoReturnable<Float> cir) {
+        float newSpeed = cir.getReturnValue() * pjs$getMachineSpeedModifier();
+        cir.setReturnValue(newSpeed);
     }
 }

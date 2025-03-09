@@ -3,6 +3,7 @@ package moe.wolfgirl.powerfuljs.mixin.create;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import moe.wolfgirl.powerfuljs.custom.mods.create.logic.ModifyCapacityEffect;
+import moe.wolfgirl.powerfuljs.custom.mods.create.logic.ModifyMachineSpeedEffect;
 import moe.wolfgirl.powerfuljs.custom.mods.create.logic.ModifyRotationSpeedEffect;
 import moe.wolfgirl.powerfuljs.custom.registries.LogicRegistry;
 import moe.wolfgirl.powerfuljs.serde.SpeedModifiers;
@@ -21,5 +22,10 @@ public abstract class ExtendedEffects {
     @Unique
     public Effect pjs$modifyStressCapacity(SpeedModifiers.SpeedModifier modifier) {
         return new ModifyCapacityEffect(modifier);
+    }
+
+    @Unique
+    public Effect pjs$modifyMachineSpeed(SpeedModifiers.SpeedModifier modifier) {
+        return new ModifyMachineSpeedEffect(modifier);
     }
 }

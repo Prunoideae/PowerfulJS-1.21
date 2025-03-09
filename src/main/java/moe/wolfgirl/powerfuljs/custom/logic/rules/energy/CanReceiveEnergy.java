@@ -14,8 +14,7 @@ public class CanReceiveEnergy extends EnergyRule {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IEnergyStorage, @Nullable Direction> capabilityCache) {
-        IEnergyStorage storage = capabilityCache.getCapability();
+    protected boolean evaluateCap(IEnergyStorage storage) {
         if (storage == null) return false;
         return storage.receiveEnergy(energy, true) > 0;
     }

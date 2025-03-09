@@ -15,8 +15,7 @@ public class CanExtractFluid extends FluidRule {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IFluidHandler, Direction> capabilityCache) {
-        var handler = capabilityCache.getCapability();
+    protected boolean evaluateCap(IFluidHandler handler) {
         if (handler == null) return false;
         return handler.drain(stack, IFluidHandler.FluidAction.SIMULATE).getAmount() == stack.getAmount();
     }

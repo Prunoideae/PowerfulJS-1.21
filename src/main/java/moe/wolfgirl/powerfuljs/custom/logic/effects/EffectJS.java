@@ -5,6 +5,7 @@ import dev.latvian.mods.kubejs.level.LevelBlock;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -21,7 +22,7 @@ public class EffectJS extends Effect {
     }
 
     @Override
-    public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public void apply(boolean condition, Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (condition) this.apply.apply(level.kjs$getBlock(blockEntity));
     }
 }

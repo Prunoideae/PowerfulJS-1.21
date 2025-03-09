@@ -16,8 +16,7 @@ public class CanInsertChemical extends ChemicalCapability {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IChemicalHandler, @Nullable Direction> capabilityCache) {
-        IChemicalHandler handler = capabilityCache.getCapability();
+    protected boolean evaluateCap(IChemicalHandler handler) {
         if (handler == null) return false;
         return handler.insertChemical(chemicalStack.copy(), Action.SIMULATE).isEmpty();
     }

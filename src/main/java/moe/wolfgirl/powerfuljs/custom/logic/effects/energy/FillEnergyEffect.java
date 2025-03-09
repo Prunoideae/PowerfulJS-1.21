@@ -17,8 +17,7 @@ public class FillEnergyEffect extends EnergyEffect {
     }
 
     @Override
-    protected void runEffect(BlockCapabilityCache<IEnergyStorage, @Nullable Direction> cache) {
-        IEnergyStorage storage = cache.getCapability();
+    protected void runEffect(IEnergyStorage storage) {
         if (storage == null) return;
 
         if (!forced || !(storage instanceof BaseEnergyStorage baseEnergyStorage)) {

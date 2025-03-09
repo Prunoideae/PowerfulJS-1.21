@@ -16,9 +16,8 @@ public class HasHeat extends CapabilityRule<IHeatHandler, @Nullable Direction> {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IHeatHandler, @Nullable Direction> capabilityCache) {
-        IHeatHandler handler = capabilityCache.getCapability();
-        if (handler == null) return false;
-        return handler.getTotalTemperature() >= temperature;
+    protected boolean evaluateCap(IHeatHandler cap) {
+        if (cap == null) return false;
+        return cap.getTotalTemperature() >= temperature;
     }
 }

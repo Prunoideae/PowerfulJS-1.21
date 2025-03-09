@@ -23,8 +23,12 @@ public class Attachments {
             .serialize(FluidStack.OPTIONAL_CODEC)
             .build();
 
-    public static final AttachmentType<List<FluidStack>> FLUID_MULTITANK = AttachmentType.builder(() -> List.of(FluidStack.EMPTY))
-            .serialize(FluidStack.CODEC.listOf())
+    public static final AttachmentType<FluidStack> INPUT_FLUID = AttachmentType.builder(() -> FluidStack.EMPTY)
+            .serialize(FluidStack.OPTIONAL_CODEC)
+            .build();
+
+    public static final AttachmentType<FluidStack> OUTPUT_FLUID = AttachmentType.builder(() -> FluidStack.EMPTY)
+            .serialize(FluidStack.OPTIONAL_CODEC)
             .build();
 
     public static final AttachmentType<ItemContent> ITEM = AttachmentType.builder(ItemContent.EMPTY)
@@ -50,7 +54,8 @@ public class Attachments {
     public static void initAttachments(RegisterEvent.RegisterHelper<AttachmentType<?>> helper) {
         helper.register(MCID.create("forge_energy"), FORGE_ENERGY);
         helper.register(MCID.create("fluid"), FLUID);
-        helper.register(MCID.create("fluid_multitank"), FLUID_MULTITANK);
+        helper.register(MCID.create("input_fluid"), INPUT_FLUID);
+        helper.register(MCID.create("output_fluid"), OUTPUT_FLUID);
         helper.register(MCID.create("item"), ITEM);
         helper.register(MCID.create("disabled"), DISABLED);
         helper.register(MCID.create("tick_speed"), TICK_SPEED);

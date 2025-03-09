@@ -8,10 +8,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ModifyRotationSpeedEffect extends Effect {
+public class ModifyMachineSpeedEffect extends Effect {
     private final SpeedModifiers.SpeedModifier modifier;
 
-    public ModifyRotationSpeedEffect(SpeedModifiers.SpeedModifier modifier) {
+    public ModifyMachineSpeedEffect(SpeedModifiers.SpeedModifier modifier) {
         this.modifier = modifier;
     }
 
@@ -19,9 +19,9 @@ public class ModifyRotationSpeedEffect extends Effect {
     public void apply(boolean condition, Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (blockEntity instanceof KineticModifier kineticModifier) {
             if (condition) {
-                kineticModifier.pjs$addGeneratingSpeedModifier(modifier);
+                kineticModifier.pjs$addMachineSpeedModifier(modifier);
             } else {
-                kineticModifier.pjs$removeGeneratingSpeedModifier(modifier.id());
+                kineticModifier.pjs$removeMachineSpeedModifier(modifier.id());
             }
         }
     }

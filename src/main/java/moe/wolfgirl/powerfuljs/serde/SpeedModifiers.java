@@ -49,7 +49,7 @@ public record SpeedModifiers(Map<String, SpeedModifier> modifiers) {
                 case ADD_BASE -> addBase += modifier.amount;
                 case MULTIPLY_BASE -> multiplyBase += modifier.amount;
                 case ADD_TOTAL -> addTotal += modifier.amount;
-                case MULTIPLY_TOTAL -> multiplyTotal += modifier.amount;
+                case MULTIPLY_TOTAL -> multiplyTotal *= (1 + modifier.amount);
             }
         }
 

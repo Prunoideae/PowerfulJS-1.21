@@ -62,19 +62,15 @@ public abstract class BaseFluidTank implements IFluidHandler, IFluidTank {
         int maxReceive = forced ? resource.getAmount() : Math.min(resource.getAmount(), getMaxReceive());
 
         if (action.simulate()) {
-            if (tankFluid.isEmpty()) {
-                return Math.min(capacity, maxReceive);
-            }
-            if (!FluidStack.isSameFluidSameComponents(tankFluid, resource)) {
-                return 0;
-            }
+            if (tankFluid.isEmpty()) return Math.min(capacity, maxReceive);
+            if (!FluidStack.isSameFluidSameComponents(tankFluid, resource)) return 0;
             return Math.min(capacity - tankFluid.getAmount(), maxReceive);
         }
 
         if (tankFluid.isEmpty()) {
             FluidStack received = resource.copyWithAmount(Math.min(capacity, maxReceive));
             setFluidData(received);
-            onReceived(Math.min(capacity, maxReceive));
+            onReceived(received.getAmount());
             onChanged();
             return received.getAmount();
         }
@@ -108,13 +104,12 @@ public abstract class BaseFluidTank implements IFluidHandler, IFluidTank {
         int drained = forced ? maxDrain : Math.min(getMaxExtract(), maxDrain);
         drained = Math.min(tankFluid.getAmount(), drained);
 
-        FluidStack drainedStack = tankFluid.copyWithAmount(drained);
         if (action.execute() && drained > 0) {
             setFluidData(tankFluid.copyWithAmount(tankFluid.getAmount() - drained));
             onExtracted(drained);
             onChanged();
         }
-        return drainedStack;
+        return tankFluid.copyWithAmount(drained);
     }
 
     protected abstract FluidStack getFluidData();

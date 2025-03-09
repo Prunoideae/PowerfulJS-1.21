@@ -50,7 +50,7 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
 
     @Override
     public void afterScriptsLoaded(ScriptManager manager) {
-        if (manager.scriptType == ScriptType.SERVER) {
+        if (manager.scriptType == ScriptType.SERVER) { // Hold the event till server_scripts loaded, so all BEs should be there at the time
             PowerfulEvents.MODIFY_BLOCK_ENTITY.post(new PowerfulModifyBlockEntityEvent());
         }
     }

@@ -6,6 +6,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -21,7 +22,7 @@ public class MachineRunningRecipe extends Rule {
     }
 
     @Override
-    public boolean evaluate(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (blockEntity instanceof RecipeProvider provider) {
             ResourceLocation running = provider.pjs$getRunningRecipe();
             return running != null && recipesToCheck.contains(running);

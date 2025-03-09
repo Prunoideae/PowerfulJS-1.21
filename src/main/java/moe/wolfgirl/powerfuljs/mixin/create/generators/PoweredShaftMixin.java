@@ -12,13 +12,13 @@ public class PoweredShaftMixin implements KineticModifier {
 
     @Inject(method = "getGeneratedSpeed", at = @At("RETURN"), cancellable = true)
     public void applyNewSpeed(CallbackInfoReturnable<Float> cir) {
-        float speed = pjs$getSpeedModifier() * cir.getReturnValue();
+        float speed = pjs$getGeneratingSpeedModifier() * cir.getReturnValue();
         cir.setReturnValue(speed);
     }
 
     @Inject(method = "calculateAddedStressCapacity", at = @At("RETURN"), cancellable = true)
     public void applyNewStressCapacity(CallbackInfoReturnable<Float> cir) {
-        float newCapacity = cir.getReturnValue() * pjs$getCapacityModifier();
+        float newCapacity = cir.getReturnValue() * pjs$getStressCapacityModifier();
         cir.setReturnValue(newCapacity);
     }
 }

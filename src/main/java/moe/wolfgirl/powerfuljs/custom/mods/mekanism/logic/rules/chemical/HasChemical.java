@@ -15,8 +15,7 @@ public class HasChemical extends ChemicalCapability {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IChemicalHandler, @Nullable Direction> capabilityCache) {
-        IChemicalHandler handler = capabilityCache.getCapability();
+    protected boolean evaluateCap(IChemicalHandler handler) {
         if (handler == null) return false;
         for (int i = 0; i < handler.getChemicalTanks(); i++) {
             var tankChemical = handler.getChemicalInTank(i);

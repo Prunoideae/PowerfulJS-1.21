@@ -12,7 +12,7 @@ public class HandCrankMixin implements KineticModifier {
 
     @Inject(method = "getGeneratedSpeed", at = @At("RETURN"), cancellable = true)
     public void applyNewSpeed(CallbackInfoReturnable<Float> cir) {
-        float speed = pjs$getSpeedModifier() * cir.getReturnValue();
+        float speed = pjs$getGeneratingSpeedModifier() * cir.getReturnValue();
         cir.setReturnValue(speed);
     }
 }

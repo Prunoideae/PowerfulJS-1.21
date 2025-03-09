@@ -3,6 +3,7 @@ package moe.wolfgirl.powerfuljs.custom.logic.effects;
 import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -22,15 +23,17 @@ public abstract class CapabilityEffect<T, C> extends Effect {
         this.context = context;
     }
 
-    protected abstract void runEffect(BlockCapabilityCache<T, C> cache);
+    protected abstract void runEffect(T cap);
 
     @Override
-    public final void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        if (cache == null) {
-            cache = BlockCapabilityCache.create(blockCapability, level, pos, context);
-        }
-        if (condition) {
-            runEffect(cache);
+    public final void apply(boolean condition, Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+        if (level instanceof ServerLevel serverLevel) {
+            if (cache == null) {
+                cache = BlockCapabilityCache.create(blockCapability, serverLevel, pos, context);
+            }
+            if (condition) {
+                runEffect(cache.getCapability());
+            }
         }
     }
 }

@@ -1,12 +1,6 @@
 package moe.wolfgirl.powerfuljs.custom.fluid.storage;
 
-import com.google.common.base.Predicates;
-import dev.latvian.mods.kubejs.fluid.FluidWrapper;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
-import dev.latvian.mods.rhino.ScriptRuntime;
-import dev.latvian.mods.rhino.type.JSObjectTypeInfo;
-import dev.latvian.mods.rhino.type.JSOptionalParam;
 import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
@@ -21,7 +15,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
-import java.util.Map;
 import java.util.function.Predicate;
 
 public abstract class FixedFluidTank extends BaseFluidTank {

@@ -16,8 +16,7 @@ public class InsertItemEffect extends ItemEffect {
     }
 
     @Override
-    protected void runEffect(BlockCapabilityCache<IItemHandler, Direction> cache) {
-        var cap = cache.getCapability();
+    protected void runEffect(IItemHandler cap) {
         if (cap == null) return;
         CapabilityUtils.insertItem(cap, itemStack, false);
     }

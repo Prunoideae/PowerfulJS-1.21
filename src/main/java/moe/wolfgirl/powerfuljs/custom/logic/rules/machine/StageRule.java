@@ -5,6 +5,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import moe.wolfgirl.powerfuljs.utils.StageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -20,7 +21,7 @@ public class StageRule extends Rule {
     }
 
     @Override
-    public boolean evaluate(ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (cache == null || cache.invalidated()) {
             UUID uuid = blockEntity.getData(Attachments.OWNER);
             cache = StageUtils.get(uuid);

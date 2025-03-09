@@ -21,9 +21,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.rules.RuleJS;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanExtractEnergy;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.CanReceiveEnergy;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.energy.HasEnergyRule;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.CanExtractFluid;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.CanReceiveFluid;
-import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.HasFluidRule;
+import moe.wolfgirl.powerfuljs.custom.logic.rules.fluid.*;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.item.CanExtractItem;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.item.CanInsertItem;
 import moe.wolfgirl.powerfuljs.custom.logic.rules.item.HasItemRule;
@@ -56,6 +54,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class LogicRegistry {
+
+    @SuppressWarnings("unused")
     public static class Rules {
         public static final Rules INSTANCE = new Rules();
 
@@ -93,8 +93,16 @@ public class LogicRegistry {
             return new StageRule(stage);
         }
 
-        public Rule higherThan(int y) {
-            return new YPosRule(y);
+        public Rule yHigherThan(int min) {
+            return yInRange(min, Integer.MAX_VALUE);
+        }
+
+        public Rule yLowerThan(int max) {
+            return yInRange(Integer.MIN_VALUE, max);
+        }
+
+        public Rule yInRange(int min, int max) {
+            return new YPosRule(min, max);
         }
 
         public Rule brighterThan(int brightness) {
@@ -117,9 +125,18 @@ public class LogicRegistry {
             return new RedstoneRule();
         }
 
+        public Rule onSide(SidedRule.Side side) {
+            return new SidedRule(side);
+        }
+
         /* Fluid handling */
         public Rule hasFluid(SizedFluidIngredient fluidIngredient, @Nullable Direction direction) {
-            return new HasFluidRule(fluidIngredient, direction);
+            return hasFluid(fluidIngredient, 0, direction);
+        }
+
+        /* Fluid handling */
+        public Rule hasFluid(SizedFluidIngredient fluidIngredient, int tank, @Nullable Direction direction) {
+            return new HasFluidRule(fluidIngredient, tank, direction);
         }
 
         public Rule canExtractFluid(FluidStack fluidStack, @Nullable Direction direction) {
@@ -128,6 +145,14 @@ public class LogicRegistry {
 
         public Rule canInsertFluid(FluidStack fluidStack, @Nullable Direction direction) {
             return new CanReceiveFluid(fluidStack, direction);
+        }
+
+        public Rule fluidEmpty(int tank, @Nullable Direction direction) {
+            return new FluidEmptyRule(tank, direction);
+        }
+
+        public Rule fluidFull(int tank, @Nullable Direction direction) {
+            return new FluidFullRule(tank, direction);
         }
 
         /* Energy handling */
@@ -213,6 +238,7 @@ public class LogicRegistry {
         }
     }
 
+    @SuppressWarnings("unused")
     public static class Effects {
         public static final Effects INSTANCE = new Effects();
 
@@ -230,16 +256,18 @@ public class LogicRegistry {
             return fillFluid(fluidStack, false, direction);
         }
 
-        public Effect fillFluid(FluidStack fluidStack, boolean forced, @Nullable Direction direction) {
-            return new FillFluidEffect(fluidStack, forced, direction);
+        @Info("Fills the fluid in the content, behavior depends on internal flag and actual container. If the container is a normal tank and internal, then it will fill/drain without limit on rate. If the container is a processing tank, then it will fill/drain the other than instead of \"normal\" tank that should be operated, e.g. draining the input, or filling the output.")
+        public Effect fillFluid(FluidStack fluidStack, boolean internal, @Nullable Direction direction) {
+            return new FillFluidEffect(fluidStack, internal, direction);
         }
 
-        public Effect drainFluid(FluidStack fluidStack, @Nullable Direction direction) {
-            return drainFluid(fluidStack, false, direction);
+        public Effect drainFluid(int amount, @Nullable Direction direction) {
+            return drainFluid(amount, false, direction);
         }
 
-        public Effect drainFluid(FluidStack fluidStack, boolean forced, @Nullable Direction direction) {
-            return new DrainFluidEffect(fluidStack, forced, direction);
+        @Info("Drains the fluid in the content, behavior depends on internal flag and actual container. If the container is a normal tank and internal, then it will fill/drain without limit on rate. If the container is a processing tank, then it will fill/drain the other than instead of \"normal\" tank that should be operated, e.g. draining the input, or filling the output.")
+        public Effect drainFluid(int amount, boolean internal, @Nullable Direction direction) {
+            return new DrainFluidEffect(amount, internal, direction);
         }
 
         /* Energy handling */

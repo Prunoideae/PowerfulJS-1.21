@@ -4,6 +4,7 @@ import moe.wolfgirl.powerfuljs.custom.logic.Effect;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ReflectiveAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -21,7 +22,7 @@ public class ReflectiveAddProgress extends Effect {
     }
 
     @Override
-    public void apply(boolean condition, ServerLevel level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+    public void apply(boolean condition, Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         try {
             int maxProgress = this.maxProgress == null ? Integer.MAX_VALUE : (int) this.maxProgress.get(blockEntity);
             int progress = Math.max(0, ticks + (int) this.progress.get(blockEntity));

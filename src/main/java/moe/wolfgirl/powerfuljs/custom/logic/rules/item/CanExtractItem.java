@@ -17,8 +17,7 @@ public class CanExtractItem extends ItemRule {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IItemHandler, Direction> capabilityCache) {
-        var cap = capabilityCache.getCapability();
+    protected boolean evaluateCap(IItemHandler cap) {
         if (cap == null) return false;
         return CapabilityUtils.extractItem(cap, itemStack, true).getCount() == itemStack.getCount();
     }

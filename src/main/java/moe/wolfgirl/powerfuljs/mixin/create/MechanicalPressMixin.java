@@ -1,12 +1,10 @@
 package moe.wolfgirl.powerfuljs.mixin.create;
 
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
-import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
 import com.simibubi.create.content.kinetics.press.PressingBehaviour;
 import com.simibubi.create.content.kinetics.press.PressingRecipe;
 import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
-import moe.wolfgirl.powerfuljs.custom.logic.behavior.IdentityCache;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
 import moe.wolfgirl.powerfuljs.custom.mods.create.BasinRecipeProvider;

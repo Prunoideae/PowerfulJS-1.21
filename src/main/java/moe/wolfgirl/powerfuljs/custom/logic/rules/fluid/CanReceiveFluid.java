@@ -15,8 +15,7 @@ public class CanReceiveFluid extends FluidRule {
     }
 
     @Override
-    protected boolean evaluateCap(BlockCapabilityCache<IFluidHandler, Direction> capabilityCache) {
-        IFluidHandler handler = capabilityCache.getCapability();
+    protected boolean evaluateCap(IFluidHandler handler) {
         if (handler == null) return false;
         return handler.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE) > 0;
     }

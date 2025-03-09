@@ -1,23 +1,27 @@
 package moe.wolfgirl.powerfuljs.custom.logic.rules.world;
 
-import moe.wolfgirl.powerfuljs.GameStates;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class DifficultyRule extends Rule {
-    private final Difficulty difficulty;
+public class SidedRule extends Rule {
 
-    public DifficultyRule(Difficulty difficulty) {
-        this.difficulty = difficulty;
+    private final Side side;
+
+    public SidedRule(Side side) {
+        this.side = side;
     }
 
     @Override
     public boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        return GameStates.GAME_DIFFICULTY == difficulty;
+        return (side == Side.SERVER) != level.isClientSide;
+    }
+
+    @SuppressWarnings("unused")
+    public enum Side {
+        SERVER,
+        CLIENT
     }
 }
