@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public class StageRule extends Rule {
     private final String stage;
+    private UUID lastUuid = null;
     private StageUtils.Cache cache = null;
     private boolean present = false;
 
@@ -22,8 +23,11 @@ public class StageRule extends Rule {
 
     @Override
     public boolean evaluate(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+        UUID uuid = blockEntity.getData(Attachments.OWNER);
+        if (uuid != lastUuid) cache = null;
+        lastUuid = uuid;
+
         if (cache == null || cache.invalidated()) {
-            UUID uuid = blockEntity.getData(Attachments.OWNER);
             cache = StageUtils.get(uuid);
             present = cache.stages.contains(stage);
         }

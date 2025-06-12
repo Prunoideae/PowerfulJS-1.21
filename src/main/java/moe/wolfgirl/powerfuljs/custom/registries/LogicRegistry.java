@@ -198,6 +198,10 @@ public class LogicRegistry {
             return new MachineRunningRecipe(Set.of(recipes));
         }
 
+        public Rule doingRecipeTag(ResourceLocation... tags) {
+            return new MachineRunningRecipeTag(Set.of(tags));
+        }
+
         /* Reflective access of all simple blocks*/
         public Rule genericRunning(Class<BlockEntity> machineClass, String progress) throws NoSuchFieldException, NoSuchMethodException {
             return new ReflectiveRunning(machineClass, progress);

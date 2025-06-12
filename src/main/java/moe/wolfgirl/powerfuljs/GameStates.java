@@ -5,6 +5,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import moe.wolfgirl.powerfuljs.custom.logic.Rule;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,6 +21,7 @@ public class GameStates {
 
     public static Set<Block> REGISTERED_BLOCKS = new HashSet<>();
     public static Multimap<BlockEntityType<?>, Rule.RuleSet> INTERCEPTED_BLOCK_ENTITIES = ArrayListMultimap.create();
+    public static Map<ResourceLocation, Set<ResourceLocation>> RECIPE_TAGS = new HashMap<>();
     public static Map<BlockEntityType<?>, Float> TICK_MODIFIED_BLOCK_ENTITIES = new HashMap<>();
     public static Set<BlockEntityType<?>> OWNED_BLOCK_ENTITIES = new HashSet<>();
     public static Difficulty GAME_DIFFICULTY = null;

@@ -87,6 +87,11 @@ public abstract class BlockEntityMixin {
     }
 
     @Unique
+    public void pjs$setOwnerUUID(UUID uuid) {
+        pjs$self().setData(Attachments.OWNER, uuid);
+    }
+
+    @Unique
     @Nullable
     public Player pjs$getOwner() {
         UUID ownerUuid = pjs$getOwnerUUID();
@@ -94,5 +99,10 @@ public abstract class BlockEntityMixin {
         Level level = pjs$self().getLevel();
         if (level == null) return null;
         return level.getPlayerByUUID(ownerUuid);
+    }
+
+    @Unique
+    public void pjs$setOwner(Player player) {
+        pjs$setOwnerUUID(player.getUUID());
     }
 }

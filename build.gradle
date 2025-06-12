@@ -133,8 +133,10 @@ dependencies {
 
     // Supported mods
     implementation("curse.maven:probejs-585406:5651850")
-    implementation "mekanism:Mekanism:${specific_minecraft_version}-${mekanism_version}"
     implementation "curse.maven:farmers-delight-398521:5772720"
+    implementation "curse.maven:createaddition-439890:6445614"
+    implementation "curse.maven:create-enchantment-industry-688768:6549319"
+    implementation "mekanism:Mekanism:${specific_minecraft_version}-${mekanism_version}"
     implementation("com.simibubi.create:create-${specific_minecraft_version}:${create_version}:slim") { transitive = false }
     api("net.createmod.ponder:Ponder-NeoForge-${specific_minecraft_version}:${ponder_version}") { transitive = false }
     api("dev.engine-room.flywheel:flywheel-neoforge-${specific_minecraft_version}:${flywheel_version}") { transitive = false }

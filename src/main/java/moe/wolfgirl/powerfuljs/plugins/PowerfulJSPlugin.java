@@ -1,13 +1,17 @@
 package moe.wolfgirl.powerfuljs.plugins;
 
+import com.google.gson.JsonElement;
+import dev.latvian.mods.kubejs.core.RecipeManagerKJS;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.misc.PotionBuilder;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
+import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
+import moe.wolfgirl.powerfuljs.GameStates;
 import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.CapabilityWrapper;
 import moe.wolfgirl.powerfuljs.custom.attachment.ContentTypes;
@@ -15,10 +19,13 @@ import moe.wolfgirl.powerfuljs.custom.attachment.PrimitiveTypes;
 import moe.wolfgirl.powerfuljs.events.PowerfulEvents;
 import moe.wolfgirl.powerfuljs.events.PowerfulModifyBlockEntityEvent;
 import moe.wolfgirl.powerfuljs.utils.MCID;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.Map;
 
 public class PowerfulJSPlugin implements KubeJSPlugin {
 
@@ -53,6 +60,11 @@ public class PowerfulJSPlugin implements KubeJSPlugin {
         if (manager.scriptType == ScriptType.SERVER) { // Hold the event till server_scripts loaded, so all BEs should be there at the time
             PowerfulEvents.MODIFY_BLOCK_ENTITY.post(new PowerfulModifyBlockEntityEvent());
         }
+    }
+
+    @Override
+    public void beforeRecipeLoading(RecipesKubeEvent event, RecipeManagerKJS manager, Map<ResourceLocation, JsonElement> recipeJsons) {
+        GameStates.RECIPE_TAGS.clear();
     }
 
     @Override

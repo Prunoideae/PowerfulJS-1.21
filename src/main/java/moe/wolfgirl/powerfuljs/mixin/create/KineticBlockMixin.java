@@ -1,4 +1,4 @@
-package moe.wolfgirl.powerfuljs.mixin.create.generators;
+package moe.wolfgirl.powerfuljs.mixin.create;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import moe.wolfgirl.powerfuljs.custom.mods.create.KineticModifier;

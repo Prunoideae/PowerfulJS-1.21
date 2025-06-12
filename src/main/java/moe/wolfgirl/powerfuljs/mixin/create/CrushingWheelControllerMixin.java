@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(CrushingWheelControllerBlockEntity.class)
-public abstract class CrushingWheelMixin implements RecipeProvider, ProgressProvider {
+public abstract class CrushingWheelControllerMixin implements RecipeProvider, ProgressProvider {
     @Shadow
     public ProcessingInventory inventory;
 

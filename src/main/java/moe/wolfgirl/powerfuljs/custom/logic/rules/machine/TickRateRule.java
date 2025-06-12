@@ -18,7 +18,7 @@ public class TickRateRule extends Rule {
 
     public TickRateRule(int rate) {
         this.rate = rate;
-        int offset = rate == 1 ? 0 : RATE_INDEXES.getOrDefault(rate, 0) + 1 % rate;
+        int offset =(rate == 1) ? 0 : (RATE_INDEXES.getOrDefault(rate, 0) + 1) % rate;
         RATE_INDEXES.put(rate, offset);
         this.offset = offset;
     }

@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
 import com.simibubi.create.content.kinetics.press.PressingBehaviour;
 import com.simibubi.create.content.kinetics.press.PressingRecipe;
 import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
+import moe.wolfgirl.powerfuljs.custom.logic.behavior.IdentityCache;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.ProgressProvider;
 import moe.wolfgirl.powerfuljs.custom.logic.behavior.RecipeProvider;
 import moe.wolfgirl.powerfuljs.custom.mods.create.BasinRecipeProvider;
@@ -26,6 +27,9 @@ import java.util.Optional;
 
 @Mixin(MechanicalPressBlockEntity.class)
 public abstract class MechanicalPressMixin implements RecipeProvider, ProgressProvider {
+
+    @Unique
+    private IdentityCache.KeyAccessible<ItemStack, ResourceLocation> pjs$cache = null;
 
     @Shadow
     public abstract Optional<RecipeHolder<PressingRecipe>> getRecipe(ItemStack item);
@@ -78,27 +82,34 @@ public abstract class MechanicalPressMixin implements RecipeProvider, ProgressPr
         Level level = pjs$self().getLevel();
         BlockPos pos = pjs$self().getBlockPos();
 
-        return switch (pressingBehaviour.mode) {
-            case WORLD -> {
-                AABB bb = new AABB(pos.below(1));
-                for (Entity entity : level.getEntities(null, bb)) {
-                    if (entity instanceof ItemEntity item) {
-                        var recipe = getRecipe(item.getItem().copyWithCount(1));
-                        if (recipe.isPresent()) {
-                            yield recipe.get().id();
+        if (pressingBehaviour.mode == PressingBehaviour.Mode.BASIN) {
+            return this instanceof BasinRecipeProvider brp ? brp.pjs$getBasinRunningRecipe() : null;
+        }
+
+        if (pjs$cache == null) {
+            pjs$cache = new IdentityCache.KeyAccessible<>(
+                    () -> switch (pressingBehaviour.mode) {
+                        case WORLD -> {
+                            AABB bb = new AABB(pos.below(1));
+                            for (Entity entity : level.getEntities(null, bb)) {
+                                if (entity instanceof ItemEntity item) {
+                                    yield item.getItem();
+                                }
+                            }
+                            yield ItemStack.EMPTY;
                         }
-                    }
-                }
-                yield null;
-            }
-            case BELT -> {
-                for (ItemStack itemStack : pjs$getItem()) {
-                    var recipe = getRecipe(itemStack.copyWithCount(1));
-                    if (recipe.isPresent()) yield recipe.get().id();
-                }
-                yield null;
-            }
-            case BASIN -> this instanceof BasinRecipeProvider brp ? brp.pjs$getBasinRunningRecipe() : null;
-        };
+                        case BELT -> {
+                            var items = pjs$getItem();
+                            yield items.isEmpty() ? ItemStack.EMPTY : items.getFirst();
+                        }
+                        case BASIN -> ItemStack.EMPTY;
+                    },
+                    itemStack -> getRecipe(itemStack.copyWithCount(1))
+                            .map(RecipeHolder::id)
+                            .orElse(null)
+            );
+        }
+
+        return pjs$cache.get();
     }
 }

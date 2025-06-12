@@ -8,5 +8,4 @@ public interface PowerfulEvents {
 
     EventHandler CAPABILITY = GROUP.startup("registerCapabilities", () -> PowerfulRegisterCapabilitiesEvent.class);
     EventHandler MODIFY_BLOCK_ENTITY = GROUP.startup("modifyBlockEntity", () -> PowerfulModifyBlockEntityEvent.class);
-
 }
