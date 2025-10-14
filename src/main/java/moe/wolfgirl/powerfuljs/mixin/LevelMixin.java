@@ -1,5 +1,7 @@
 package moe.wolfgirl.powerfuljs.mixin;
 
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import moe.wolfgirl.powerfuljs.custom.Attachments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +31,7 @@ public abstract class LevelMixin {
     }
 
     @Unique
+    @Info("PowerfulJS: Get compound data stored in corresponding block position. Note that the data will NOT be cleared when the block is removed. Useful for persisting data like radiation, fertilizer or something, or assign block data to non-BEs.")
     public CompoundTag kjs$getBlockData(BlockPos blockPos) {
         return pjs$self().getChunkAt(blockPos)
                 .getData(Attachments.CHUNK_DATA)
@@ -37,6 +40,7 @@ public abstract class LevelMixin {
     }
 
     @Unique
+    @Info("PowerfulJS: Assign compound data to corresponding block position. Note that the data will NOT be cleared when the block is removed. Useful for persisting data like radiation, fertilizer or something, or assign block data to non-BEs.")
     public void kjs$setBlockData(BlockPos blockPos, CompoundTag compoundTag) {
         LevelChunk levelChunk = pjs$self().getChunkAt(blockPos);
         var data = levelChunk.getData(Attachments.CHUNK_DATA);

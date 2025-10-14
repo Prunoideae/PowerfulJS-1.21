@@ -17,6 +17,7 @@
         "create.DeployerMixin",
         "create.ExtendedEffects",
         "create.KineticBlockMixin",
+        "create.MechanicalCrafterMixin",
         "create.MechanicalMixerMixin",
         "create.MechanicalPressMixin",
         "create.MechanicalSawMixin",
@@ -50,5 +51,5 @@
     ],
     "injectors": {
         "defaultRequire": 1
-  }
+    }
 }
