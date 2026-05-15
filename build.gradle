@@ -138,7 +138,7 @@ dependencies {
     interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 
     // Supported mods
-    implementation("curse.maven:probejs-585406:5651850")
+    implementation("curse.maven:probejs-585406:8073983")
     implementation "curse.maven:farmers-delight-398521:5772720"
     implementation "curse.maven:createaddition-439890:6445614"
     implementation "curse.maven:create-enchantment-industry-688768:6549319"
@@ -156,7 +156,7 @@ dependencies {
 // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
-            minecraft_version      : minecraft_version,
+            minecraft_version      : specific_minecraft_version,
             minecraft_version_range: minecraft_version_range,
             neo_version            : neo_version,
             neo_version_range      : neo_version_range,

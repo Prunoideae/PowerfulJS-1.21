@@ -2,17 +2,21 @@ package moe.wolfgirl.powerfuljs.plugins.docs;
 
 import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.CapabilityWrapper;
-import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
-import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
-import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
-import moe.wolfgirl.probejs.lang.typescript.code.member.InterfaceDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.member.MethodDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.member.ParamDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.member.TypeDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
-import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
-import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
+import moe.wolfgirl.probejs.typescript.ClassPath;
+import moe.wolfgirl.probejs.typescript.Documents;
+import moe.wolfgirl.probejs.typescript.base.DocumentRegistrar;
+import moe.wolfgirl.probejs.typescript.document.ClassDecl;
+import moe.wolfgirl.probejs.typescript.document.Members;
+import moe.wolfgirl.probejs.typescript.document.TypeDecl;
+import moe.wolfgirl.probejs.typescript.document.Types;
+import moe.wolfgirl.probejs.typescript.document.base.Code;
+import moe.wolfgirl.probejs.typescript.document.base.KindAware;
+import moe.wolfgirl.probejs.typescript.document.base.Type;
+import moe.wolfgirl.probejs.typescript.document.builders.ClassBuilder;
+import moe.wolfgirl.probejs.typescript.document.members.MethodDecl;
+import moe.wolfgirl.probejs.typescript.document.members.ParamDecl;
+import moe.wolfgirl.probejs.typescript.document.types.special.NamespacedType;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.capabilities.BaseCapability;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -20,42 +24,59 @@ import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class CapabilityJSDoc extends ProbeJSPlugin {
+    public static final ClassPath CAPABILITY_TYPES = ClassPath.special("types.powerfuljs.CapabilityTypes");
+    public static final NamespacedType ITEM_MAP = Types.namespaced(CAPABILITY_TYPES, "ItemMap");
+    public static final NamespacedType BLOCK_MAP = Types.namespaced(CAPABILITY_TYPES, "BlockMap");
+    public static final NamespacedType ENTITY_MAP = Types.namespaced(CAPABILITY_TYPES, "EntityMap");
+
 
     @Override
-    public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-        TypeScriptFile scriptFile = globalClasses.get(new ClassPath(CapabilityWrapper.class));
-        if (scriptFile == null) return;
-
-        generateMappedTypes("BlockCapabilityMap", "BlockCapabilities",
-                CapabilityJS.BLOCK, BlockCapability.class, scriptFile);
-        generateMappedTypes("EntityCapabilityMap", "EntityCapabilities",
-                CapabilityJS.ENTITY, EntityCapability.class, scriptFile);
-        generateMappedTypes("ItemCapabilityMap", "ItemCapabilities",
-                CapabilityJS.ITEM, ItemCapability.class, scriptFile);
-
-        var classDecl = scriptFile.findCode(InterfaceDecl.class).orElseThrow();
-        for (MethodDecl method : classDecl.methods) {
-            if (method.name.equals("item")) {
-                patchMethod(method, "ItemCapabilities", "ItemCapabilityMap");
-            }
-            if (method.name.equals("block")) {
-                patchMethod(method, "BlockCapabilities", "BlockCapabilityMap");
-            }
-            if (method.name.equals("entity")) {
-                patchMethod(method, "EntityCapabilities", "EntityCapabilityMap");
+    public void modifyClasses(Documents.ClassAccessor classDocuments) {
+        var capabilityWrapper = classDocuments.getDocument(CapabilityWrapper.class);
+        if (capabilityWrapper instanceof ClassDecl classDecl) {
+            for (Code member : classDecl.members) {
+                if (member instanceof MethodDecl methodDecl) {
+                    if (methodDecl.name.equals("item")) patchMethod(methodDecl, ITEM_MAP);
+                    if (methodDecl.name.equals("block")) patchMethod(methodDecl, BLOCK_MAP);
+                    if (methodDecl.name.equals("entity")) patchMethod(methodDecl, ENTITY_MAP);
+                }
             }
         }
     }
 
-    private void patchMethod(MethodDecl methodDecl, String flagName, String mapName) {
-        methodDecl.variableTypes.add(Types.generic("T", Types.primitive(flagName)));
-        methodDecl.params.set(0, new ParamDecl("capability", Types.generic("T"), false, false));
-        methodDecl.returnType = Types.primitive("%s[T]".formatted(mapName));
+    private void patchMethod(MethodDecl methodDecl, Type mapType) {
+        methodDecl.typeParams.add(Types.variable("T", Types.wrapped("keyof %s", mapType)));
+        methodDecl.params.set(0, new ParamDecl("capability", Types.variable("T")));
+        methodDecl.returnType = Types.wrapped("%s[T]", mapType);
     }
+
+
+    @Override
+    public void addSpecialDocuments(DocumentRegistrar registrar) {
+        ClassBuilder capabilityTypes = Members.clazz(CAPABILITY_TYPES).kind(KindAware.Kind.NAMESPACE);
+        capabilityTypes.member(getMappedType("ItemMap", CapabilityJS.ITEM, ItemCapability.class));
+        capabilityTypes.member(getMappedType("BlockMap", CapabilityJS.BLOCK, BlockCapability.class));
+        capabilityTypes.member(getMappedType("EntityMap", CapabilityJS.ENTITY, EntityCapability.class));
+        registrar.addDocument(CAPABILITY_TYPES, capabilityTypes.build());
+    }
+
+    public <O extends BaseCapability<?, ?>> TypeDecl getMappedType(String mapName, CapabilityJS<O> capabilityJS, Class<?> capClass) {
+        return new TypeDecl(CAPABILITY_TYPES.append(mapName), Types.object(builder -> {
+            capabilityJS.getCapabilities().forEach(cap -> {
+                ResourceLocation key = cap.name();
+                Class<?> typeClass = cap.typeClass();
+                Class<?> contextClass = cap.contextClass();
+                builder.param(key.toString(), Types.clazz(capClass).withParams(
+                        Types.clazz(typeClass),
+                        contextClass == void.class ? Types.VOID : Types.clazz(contextClass)
+                ));
+            });
+        }), false);
+    }
+
 
     private <O extends BaseCapability<?, ?>> void addCapabilityClasses(CapabilityJS<O> capabilityJS, Set<Class<?>> allClass) {
         capabilityJS.getCapabilities().forEach(o -> {
@@ -65,35 +86,12 @@ public class CapabilityJSDoc extends ProbeJSPlugin {
     }
 
     @Override
-    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
+    public Set<Class<?>> provideClassForDiscovery() {
         Set<Class<?>> classes = new HashSet<>();
+        classes.add(CapabilityWrapper.class);
         addCapabilityClasses(CapabilityJS.BLOCK, classes);
         addCapabilityClasses(CapabilityJS.ENTITY, classes);
         addCapabilityClasses(CapabilityJS.ITEM, classes);
         return classes;
-    }
-
-    private <O extends BaseCapability<?, ?>> void generateMappedTypes(String mapName, String flagName,
-                                                                      CapabilityJS<O> capabilityJS,
-                                                                      Class<?> capClass,
-                                                                      TypeScriptFile typeScriptFile) {
-        JSObjectType.Builder typeDict = Types.object();
-        BaseType capType = Types.type(capClass);
-
-        capabilityJS.getCapabilities().forEach(cap -> {
-            ResourceLocation key = cap.name();
-            Class<?> typeClass = cap.typeClass();
-            Class<?> contextClass = cap.contextClass();
-            typeDict.member(key.toString(),
-                    Types.ignoreContext(Types.parameterized(
-                            capType,
-                            Types.type(typeClass),
-                            contextClass == void.class ? Types.VOID : Types.type(contextClass)
-                    ), BaseType.FormatType.RETURN)
-            );
-        });
-
-        typeScriptFile.addCode(new TypeDecl(mapName, typeDict.buildIndexed()));
-        typeScriptFile.addCode(new TypeDecl(flagName, Types.primitive("keyof %s".formatted(mapName))));
     }
 }

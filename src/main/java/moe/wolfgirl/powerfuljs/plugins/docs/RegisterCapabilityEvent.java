@@ -1,22 +1,24 @@
 package moe.wolfgirl.powerfuljs.plugins.docs;
 
-import moe.wolfgirl.powerfuljs.custom.CapabilityJS;
 import moe.wolfgirl.powerfuljs.custom.base.CapabilityBuilder;
 import moe.wolfgirl.powerfuljs.custom.registries.BlockCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.EntityCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.custom.registries.ItemCapabilityRegistry;
 import moe.wolfgirl.powerfuljs.events.PowerfulRegisterCapabilitiesEvent;
-import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
-import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
-import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
-import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
-import moe.wolfgirl.probejs.lang.typescript.code.member.ClassDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.member.MethodDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.member.ParamDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.member.TypeDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
-import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
+import moe.wolfgirl.probejs.typescript.ClassPath;
+import moe.wolfgirl.probejs.typescript.Documents;
+import moe.wolfgirl.probejs.typescript.base.DocumentRegistrar;
+import moe.wolfgirl.probejs.typescript.document.ClassDecl;
+import moe.wolfgirl.probejs.typescript.document.Members;
+import moe.wolfgirl.probejs.typescript.document.TypeDecl;
+import moe.wolfgirl.probejs.typescript.document.Types;
+import moe.wolfgirl.probejs.typescript.document.base.Code;
+import moe.wolfgirl.probejs.typescript.document.base.KindAware;
+import moe.wolfgirl.probejs.typescript.document.members.MethodDecl;
+import moe.wolfgirl.probejs.typescript.document.members.ParamDecl;
+import moe.wolfgirl.probejs.typescript.document.types.special.NamespacedType;
+import moe.wolfgirl.probejs.typescript.transpiler.TypeConverter;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashSet;
@@ -24,67 +26,65 @@ import java.util.Map;
 import java.util.Set;
 
 public class RegisterCapabilityEvent extends ProbeJSPlugin {
+    public static final ClassPath CAPABILITY_EVENT_TYPE = ClassPath.special("types.powerfuljs.CapabilityEventTypes");
+    public static final NamespacedType BLOCK_ENTITY_BUILDERS = Types.namespaced(CAPABILITY_EVENT_TYPE, "BlockEntityBuilders");
+    public static final NamespacedType BLOCK_BUILDERS = Types.namespaced(CAPABILITY_EVENT_TYPE, "BlockBuilders");
+    public static final NamespacedType ENTITY_BUILDERS = Types.namespaced(CAPABILITY_EVENT_TYPE, "EntityBuilders");
+    public static final NamespacedType ITEM_BUILDERS = Types.namespaced(CAPABILITY_EVENT_TYPE, "ItemBuilders");
+
     @Override
-    public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-        TypeConverter converter = scriptDump.transpiler.typeConverter;
-        TypeScriptFile scriptFile = globalClasses.get(new ClassPath(PowerfulRegisterCapabilitiesEvent.class));
-        if (scriptFile == null) return;
-
-        generateMappedTypes("BlockEntityCapabilityMap", "BlockEntityCapabilities", BlockCapabilityRegistry.BLOCK_ENTITIES, converter, scriptFile);
-        generateMappedTypes("BlockCapabilityMap", "BlockCapabilities", BlockCapabilityRegistry.BLOCKS, converter, scriptFile);
-        generateMappedTypes("EntityCapabilityMap", "EntityCapabilities", EntityCapabilityRegistry.ENTITY, converter, scriptFile);
-        generateMappedTypes("ItemCapabilityMap", "ItemCapabilities", ItemCapabilityRegistry.ITEM, converter, scriptFile);
-
-        var classDecl = scriptFile.findCode(ClassDecl.class).orElseThrow();
-        for (MethodDecl method : classDecl.methods) {
-            // This is so cursed because I can't type a Map<ResourceLocation, CapabilityBuilder<?, ?>>
-            if (method.name.equals("registerBlock")) {
-                patchMethod(method, "BlockCapabilities", "BlockCapabilityMap");
-            }
-            if (method.name.equals("registerBlockEntity")) {
-                patchMethod(method, "BlockEntityCapabilities", "BlockEntityCapabilityMap");
-            }
-            if (method.name.equals("registerItem")) {
-                patchMethod(method, "ItemCapabilities", "ItemCapabilityMap");
-            }
-            if (method.name.equals("registerEntity")) {
-                patchMethod(method, "EntityCapabilities", "EntityCapabilityMap");
+    public void modifyClasses(Documents.ClassAccessor classDocuments) {
+        var document = classDocuments.getDocument(PowerfulRegisterCapabilitiesEvent.class);
+        if (document instanceof ClassDecl classDecl) {
+            for (Code member : classDecl.members) {
+                if (member instanceof MethodDecl methodDecl) {
+                    if (methodDecl.name.equals("registerBlock")) patchMethod(methodDecl, BLOCK_BUILDERS);
+                    if (methodDecl.name.equals("registerBlockEntity")) patchMethod(methodDecl, BLOCK_ENTITY_BUILDERS);
+                    if (methodDecl.name.equals("registerItem")) patchMethod(methodDecl, ITEM_BUILDERS);
+                    if (methodDecl.name.equals("registerEntity")) patchMethod(methodDecl, ENTITY_BUILDERS);
+                }
             }
         }
     }
 
-    private <O> void generateMappedTypes(String mapName, String flagName, Map<ResourceLocation, CapabilityBuilder<O, ?>> registry, TypeConverter converter, TypeScriptFile typeScriptFile) {
-        JSObjectType.Builder typeDict = Types.object();
-        for (Map.Entry<ResourceLocation, CapabilityBuilder<O, ?>> entry : registry.entrySet()) {
-            ResourceLocation key = entry.getKey();
-            CapabilityBuilder<O, ?> builder = entry.getValue();
-
-            typeDict.member(key.toString(), converter.convertType(builder.typeInfo()));
-        }
-        typeScriptFile.addCode(new TypeDecl(mapName, typeDict.buildIndexed()));
-        typeScriptFile.addCode(new TypeDecl(flagName, Types.primitive("keyof %s".formatted(mapName))));
-    }
-
-    private void patchMethod(MethodDecl methodDecl, String flagName, String mapName) {
-        methodDecl.variableTypes.add(Types.generic("T", Types.primitive(flagName)));
-        methodDecl.params.set(0, new ParamDecl("builderKey", Types.generic("T"), false, false));
-        methodDecl.params.set(1, new ParamDecl("configuration", Types.primitive("%s[T]".formatted(mapName)), false, false));
-    }
-
-
-    private <O> void addBuilderClasses(Map<ResourceLocation, CapabilityBuilder<O, ?>> builders, Set<Class<?>> allClass) {
-        for (CapabilityBuilder<O, ?> value : builders.values()) {
-            allClass.add(value.typeInfo().asClass());
-        }
+    private void patchMethod(MethodDecl methodDecl, NamespacedType mapType) {
+        methodDecl.typeParams.add(Types.variable("T", Types.wrapped("keyof %s", mapType)));
+        methodDecl.params.set(0, new ParamDecl("builderKey", Types.variable("T")));
+        methodDecl.params.set(1, new ParamDecl("configuration", Types.wrapped("%s[T]", mapType)));
     }
 
     @Override
-    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
+    public void addSpecialDocuments(DocumentRegistrar registrar) {
+        var converter = new TypeConverter();
+        var classBuilder = Members.clazz(CAPABILITY_EVENT_TYPE).kind(KindAware.Kind.NAMESPACE);
+        classBuilder.member(getMappedType("BlockEntityBuilders", BlockCapabilityRegistry.BLOCK_ENTITIES, converter));
+        classBuilder.member(getMappedType("BlockBuilders", BlockCapabilityRegistry.BLOCKS, converter));
+        classBuilder.member(getMappedType("EntityBuilders", EntityCapabilityRegistry.ENTITY, converter));
+        classBuilder.member(getMappedType("ItemBuilders", ItemCapabilityRegistry.ITEM, converter));
+        registrar.addDocument(CAPABILITY_EVENT_TYPE, classBuilder.build());
+    }
+
+    private <O> TypeDecl getMappedType(String mapName, Map<ResourceLocation, CapabilityBuilder<O, ?>> registry, TypeConverter converter) {
+        return new TypeDecl(CAPABILITY_EVENT_TYPE.append(mapName), Types.object(builder -> {
+            for (Map.Entry<ResourceLocation, CapabilityBuilder<O, ?>> entry : registry.entrySet()) {
+                ResourceLocation key = entry.getKey();
+                CapabilityBuilder<O, ?> capBuilder = entry.getValue();
+                builder.param(key.toString(), converter.convertType(capBuilder.typeInfo()).markAsInput());
+            }
+        }), false);
+    }
+
+    @Override
+    public Set<Class<?>> provideClassForDiscovery() {
         Set<Class<?>> classes = new HashSet<>();
         addBuilderClasses(BlockCapabilityRegistry.BLOCK_ENTITIES, classes);
         addBuilderClasses(BlockCapabilityRegistry.BLOCKS, classes);
         addBuilderClasses(ItemCapabilityRegistry.ITEM, classes);
         addBuilderClasses(EntityCapabilityRegistry.ENTITY, classes);
         return classes;
+    }
+
+    private <O> void addBuilderClasses(Map<ResourceLocation, CapabilityBuilder<O, ?>> builders, Set<Class<?>> allClass) {
+        for (CapabilityBuilder<O, ?> value : builders.values()) allClass.add(value.typeInfo().asClass());
     }
 }
